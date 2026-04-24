@@ -984,53 +984,53 @@
 
     /* Color classes */
     .c-red {
-      background: linear-gradient(145deg, #ff2a3c, #c4001c);
-      border: 3px solid rgba(255, 255, 255, .9);
-      box-shadow: 0 0 14px rgba(240, 20, 40, .5), 0 5px 16px rgba(0, 0, 0, .45)
+      background: #e8192c;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .4)
     }
 
     .c-blue {
-      background: linear-gradient(145deg, #1a8fff, #0055cc);
-      border: 3px solid rgba(255, 255, 255, .9);
-      box-shadow: 0 0 14px rgba(0, 119, 238, .5), 0 5px 16px rgba(0, 0, 0, .45)
+      background: #0066cc;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .4)
     }
 
     .c-green {
-      background: linear-gradient(145deg, #22cc00, #0d7a00);
-      border: 3px solid rgba(255, 255, 255, .9);
-      box-shadow: 0 0 14px rgba(26, 170, 0, .5), 0 5px 16px rgba(0, 0, 0, .45)
+      background: #148a00;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .4)
     }
 
     .c-yellow {
-      background: linear-gradient(145deg, #ffe040, #e6a800);
-      border: 3px solid rgba(255, 255, 255, .9);
-      box-shadow: 0 0 14px rgba(255, 204, 0, .5), 0 5px 16px rgba(0, 0, 0, .45)
+      background: #ffc21a;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .4)
     }
 
     .c-wild {
-      background: linear-gradient(145deg, #2a0a4e, #0d0520);
-      border: 3px solid rgba(255, 255, 255, .85);
-      box-shadow: 0 0 14px rgba(150, 80, 255, .5), 0 5px 16px rgba(0, 0, 0, .45)
+      background: #111;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .4)
     }
 
     .card.playable.c-red:hover {
-      box-shadow: 0 0 34px rgba(240, 20, 40, .9), 0 0 60px rgba(240, 20, 40, .4), 0 14px 32px rgba(0, 0, 0, .4)
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .5)
     }
 
     .card.playable.c-blue:hover {
-      box-shadow: 0 0 34px rgba(0, 119, 238, .9), 0 0 60px rgba(0, 119, 238, .4), 0 14px 32px rgba(0, 0, 0, .4)
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .5)
     }
 
     .card.playable.c-green:hover {
-      box-shadow: 0 0 34px rgba(26, 170, 0, .9), 0 0 60px rgba(26, 170, 0, .4), 0 14px 32px rgba(0, 0, 0, .4)
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .5)
     }
 
     .card.playable.c-yellow:hover {
-      box-shadow: 0 0 34px rgba(255, 204, 0, .9), 0 0 60px rgba(255, 204, 0, .4), 0 14px 32px rgba(0, 0, 0, .4)
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .5)
     }
 
     .card.playable.c-wild:hover {
-      box-shadow: 0 0 34px rgba(180, 100, 255, .9), 0 0 60px rgba(180, 100, 255, .4), 0 14px 32px rgba(0, 0, 0, .4)
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .5)
     }
 
     /* Card face */
@@ -1847,21 +1847,19 @@
       const el = document.getElementById('discard-live'); el.innerHTML = '';
       const face = buildCardFace(top, true);
       face.style.cssText = 'position:absolute;inset:0;border-radius:11px;';
-      const glow = GLOW[G.currentColor] || 'rgba(255,255,255,.4)';
-      face.style.boxShadow = `0 0 28px ${glow}, 0 0 56px ${glow.replace('.85', '.4')}, 0 8px 24px rgba(0,0,0,.6)`;
+      face.style.boxShadow = '0 6px 18px rgba(0,0,0,.6)';
       face.classList.add('slam');
       el.appendChild(face);
-      // Also glow the discard zone border
+      // Clean border on discard zone matching current color
       const dz = document.getElementById('discard-zone');
-      const borderColor = BG[G.currentColor] || 'rgba(255,255,255,.28)';
-      dz.style.boxShadow = `0 0 22px ${glow.replace('.85', '.5')}, inset 0 0 12px ${glow.replace('.85', '.15')}`;
-      dz.style.borderColor = borderColor;
+      dz.style.boxShadow = '';
+      dz.style.borderColor = BG[G.currentColor] || 'rgba(255,255,255,.28)';
       dz.style.borderStyle = 'solid';
     }
     function renderColorRing() {
       const r = document.getElementById('color-ring');
       r.style.background = BG[G.currentColor] || '#888';
-      r.style.boxShadow = `0 0 20px ${GLOW[G.currentColor] || 'rgba(255,255,255,.3)'}`;
+      r.style.boxShadow = '';
     }
     function renderScores() { G.players.forEach(p => { const e = document.getElementById(`sv-${p.id}`); if (e) e.textContent = p.hand.length }) }
     function renderTurnMsg() {
@@ -1885,25 +1883,19 @@
       el.appendChild(buildCardFace(card, false));
       return el;
     }
-    const BG_GRAD = {
-      red: 'linear-gradient(145deg, #ff2a3c, #c4001c)',
-      blue: 'linear-gradient(145deg, #1a8fff, #0055cc)',
-      green: 'linear-gradient(145deg, #22cc00, #0d7a00)',
-      yellow: 'linear-gradient(145deg, #ffe040, #e6a800)',
-      wild: 'linear-gradient(145deg, #2a0a4e, #0d0520)'
-    };
+    const BG_GRAD = BG; // same flat colors, no gradient
     function buildCardFace(card, large) {
       const el = document.createElement('div'); el.className = 'cf';
       const s = sym(card), sz = large ? 42 : 32, osW = large ? 54 : 40, osH = large ? 78 : 58, csz = large ? 16 : 13;
       if (card.type === 'wild' || card.type === 'wild4') {
-        el.style.background = '#1a0a2e';
+        el.style.background = '#111';
         el.innerHTML = `<div class="wild-quad"><span></span><span></span><span></span><span></span></div>
       <div class="cf-oval" style="width:${osW}px;height:${osH}px;background:rgba(0,0,0,0)"></div>
       <div class="cf-sym" style="font-size:${sz}px;color:#fff;text-shadow:1px 1px 5px rgba(0,0,0,.6);z-index:2">${s}</div>
       <div class="cf-tl" style="color:#fff;font-size:${csz}px;text-shadow:1px 1px 3px rgba(0,0,0,.5)">${s}</div>
       <div class="cf-br" style="color:#fff;font-size:${csz}px;text-shadow:1px 1px 3px rgba(0,0,0,.5)">${s}</div>`;
       } else {
-        el.style.background = BG_GRAD[card.color] || BG[card.color];
+        el.style.background = BG[card.color];
         el.innerHTML = `<div class="cf-oval" style="width:${osW}px;height:${osH}px"></div>
       <div class="cf-sym sc-${card.color}" style="font-size:${sz}px">${s}</div>
       <div class="cf-tl sc-${card.color}" style="font-size:${csz}px">${s}</div>
