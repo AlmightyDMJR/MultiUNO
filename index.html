@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UNO Online — Cinematic Edition</title>
+  <title>MultiUNO Online</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap"
     rel="stylesheet">
@@ -938,6 +938,35 @@
       box-shadow: 0 10px 36px rgba(108, 92, 231, .7)
     }
 
+    /* ── WAITING OVERLAY ── */
+    #wait-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(6, 7, 18, .88);
+      backdrop-filter: blur(6px);
+      z-index: 250;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    #wait-overlay p {
+      color: var(--muted);
+      font-family: 'Bebas Neue', cursive;
+      font-size: 20px;
+      letter-spacing: 3px;
+      text-align: center
+    }
+
+    #wait-overlay .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, .1);
+      border-top-color: rgba(255, 255, 255, .55)
+    }
+
     /* ══════════════════════════════════════════════════
    UNO CARD STYLES
 ══════════════════════════════════════════════════ */
@@ -984,53 +1013,53 @@
 
     /* Color classes */
     .c-red {
-      background: #e8192c;
-      border: 3px solid #fff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, .4)
+      background: linear-gradient(145deg, #ff2a3c, #c4001c);
+      border: 3px solid rgba(255, 255, 255, .9);
+      box-shadow: 0 0 14px rgba(240, 20, 40, .5), 0 5px 16px rgba(0, 0, 0, .45)
     }
 
     .c-blue {
-      background: #0066cc;
-      border: 3px solid #fff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, .4)
+      background: linear-gradient(145deg, #1a8fff, #0055cc);
+      border: 3px solid rgba(255, 255, 255, .9);
+      box-shadow: 0 0 14px rgba(0, 119, 238, .5), 0 5px 16px rgba(0, 0, 0, .45)
     }
 
     .c-green {
-      background: #148a00;
-      border: 3px solid #fff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, .4)
+      background: linear-gradient(145deg, #22cc00, #0d7a00);
+      border: 3px solid rgba(255, 255, 255, .9);
+      box-shadow: 0 0 14px rgba(26, 170, 0, .5), 0 5px 16px rgba(0, 0, 0, .45)
     }
 
     .c-yellow {
-      background: #ffc21a;
-      border: 3px solid #fff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, .4)
+      background: linear-gradient(145deg, #ffe040, #e6a800);
+      border: 3px solid rgba(255, 255, 255, .9);
+      box-shadow: 0 0 14px rgba(255, 204, 0, .5), 0 5px 16px rgba(0, 0, 0, .45)
     }
 
     .c-wild {
-      background: #111;
-      border: 3px solid #fff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, .4)
+      background: linear-gradient(145deg, #2a0a4e, #0d0520);
+      border: 3px solid rgba(255, 255, 255, .85);
+      box-shadow: 0 0 14px rgba(150, 80, 255, .5), 0 5px 16px rgba(0, 0, 0, .45)
     }
 
     .card.playable.c-red:hover {
-      box-shadow: 0 8px 20px rgba(0, 0, 0, .5)
+      box-shadow: 0 0 34px rgba(240, 20, 40, .9), 0 0 60px rgba(240, 20, 40, .4), 0 14px 32px rgba(0, 0, 0, .4)
     }
 
     .card.playable.c-blue:hover {
-      box-shadow: 0 8px 20px rgba(0, 0, 0, .5)
+      box-shadow: 0 0 34px rgba(0, 119, 238, .9), 0 0 60px rgba(0, 119, 238, .4), 0 14px 32px rgba(0, 0, 0, .4)
     }
 
     .card.playable.c-green:hover {
-      box-shadow: 0 8px 20px rgba(0, 0, 0, .5)
+      box-shadow: 0 0 34px rgba(26, 170, 0, .9), 0 0 60px rgba(26, 170, 0, .4), 0 14px 32px rgba(0, 0, 0, .4)
     }
 
     .card.playable.c-yellow:hover {
-      box-shadow: 0 8px 20px rgba(0, 0, 0, .5)
+      box-shadow: 0 0 34px rgba(255, 204, 0, .9), 0 0 60px rgba(255, 204, 0, .4), 0 14px 32px rgba(0, 0, 0, .4)
     }
 
     .card.playable.c-wild:hover {
-      box-shadow: 0 8px 20px rgba(0, 0, 0, .5)
+      box-shadow: 0 0 34px rgba(180, 100, 255, .9), 0 0 60px rgba(180, 100, 255, .4), 0 14px 32px rgba(0, 0, 0, .4)
     }
 
     /* Card face */
@@ -1048,7 +1077,8 @@
     .cf-oval {
       position: absolute;
       border-radius: 50%;
-      background: rgba(255, 255, 255, .95);
+      background: rgba(255, 255, 255, .22);
+      border: 2px solid rgba(255, 255, 255, .5);
       transform: rotate(-20deg);
       z-index: 1
     }
@@ -1080,23 +1110,28 @@
     }
 
     .sc-red {
-      color: var(--red)
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, .7), 0 0 12px rgba(0, 0, 0, .5)
     }
 
     .sc-blue {
-      color: var(--blue)
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, .7), 0 0 12px rgba(0, 0, 0, .5)
     }
 
     .sc-green {
-      color: var(--green)
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, .7), 0 0 12px rgba(0, 0, 0, .5)
     }
 
     .sc-yellow {
-      color: #7a5500
+      color: #1a0a00;
+      text-shadow: 0 1px 3px rgba(255, 255, 255, .3)
     }
 
     .sc-wild {
-      color: #111
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, .8)
     }
 
     .wild-quad {
@@ -1329,7 +1364,7 @@
     <div id="action-bar">
       <div id="turn-msg">YOUR TURN</div>
       <button class="action-btn" id="uno-btn" onclick="callUno()">UNO!</button>
-      <button class="action-btn" id="skip-btn" onclick="humanSkip()">PASS TURN</button>
+      <button class="action-btn" id="skip-btn" onclick="humanSkip()">SKIP TURN</button>
     </div>
 
     <div id="bottom-zone">
@@ -1349,6 +1384,12 @@
     </div>
 
     <div id="scores-panel"></div>
+
+    <!-- Waiting for online opponent -->
+    <div id="wait-overlay">
+      <div class="spinner"></div>
+      <p id="wait-msg">Waiting for players…</p>
+    </div>
 
     <div id="end-overlay">
       <h1 id="end-title">WINNER!</h1>
@@ -1604,6 +1645,9 @@
     function sym(c) { return c.type === 'number' ? c.value : c.type === 'skip' ? '⊘' : c.type === 'reverse' ? '⇄' : c.type === 'draw2' ? '+2' : c.type === 'wild' ? '★' : c.type === 'wild4' ? '+4' : '?' }
     function canPlayCard(card) {
       const top = G.discardPile[G.discardPile.length - 1];
+      // If a stack is pending, player MUST stack the same draw type or accept penalty
+      if (G.mustStack && G.stackType === 'draw2') return card.type === 'draw2';
+      if (G.mustStack && G.stackType === 'wild4') return card.type === 'wild4';
       if (card.color === 'wild') return true;
       if (card.color === G.currentColor) return true;
       if (card.type !== 'number' && top.type === card.type) return true;
@@ -1646,7 +1690,7 @@
         players: state.players, deck: state.deck, discardPile: state.discardPile,
         currentColor: state.currentColor, direction: state.direction, curIdx: state.curIdx,
         active: true, pendingWild: null, unoFlags: state.players.map(() => false),
-        drawnThisTurn: false
+        stackPending: 0, stackType: null, mustStack: false, drawnThisTurn: false
       };
       showGameScreen();
       renderAll();
@@ -1671,9 +1715,18 @@
         const r = snap.val();
         applyRoomToG(r, orderedPlayers);
         renderAll();
-        // Never block the board — everyone watches play unfold live
+        // If it's my turn, show actions; else wait overlay
         const isMyTurn = G.curIdx === myIndex && !G.players[myIndex].cpu;
+        // Only show wait overlay in online mode for human opponent turns
+        const otherIsHuman = !G.players[G.curIdx].cpu;
+        document.getElementById('wait-overlay').style.display = (!isMyTurn && G.active && otherIsHuman) ? 'flex' : 'none';
+        if ((!isMyTurn) && G.active && otherIsHuman) {
+          const currentPlayer = G.players[G.curIdx];
+          document.getElementById('wait-msg').textContent = `${currentPlayer.name.toUpperCase()}'S TURN…`;
+        }
+        if (G.active && !isMyTurn && !G.players[G.curIdx].cpu) { }// other human's turn
         if (G.active && !isMyTurn && G.players[G.curIdx].cpu && isHost) { setTimeout(aiTurn, 900) }
+        if (!G.active) { document.getElementById('wait-overlay').style.display = 'none' }
       });
       unsubscribes.push(() => ref.off('value', off));
     }
@@ -1714,6 +1767,7 @@
       SCREENS.forEach(s => document.getElementById(s).classList.add('out'));
       document.getElementById('game-screen').style.display = 'block';
       document.getElementById('end-overlay').style.display = 'none';
+      document.getElementById('wait-overlay').style.display = 'none';
       buildOppZones();
       buildScoresPanel();
       createStars();
@@ -1821,8 +1875,15 @@
       // Buttons
       const showUno = p.hand.length === 1 && isTurn && !G.unoFlags[G.players.indexOf(p)];
       document.getElementById('uno-btn').style.display = showUno ? 'inline-block' : 'none';
-      const showSkip = isTurn && G.active;
-      document.getElementById('skip-btn').style.display = showSkip ? 'inline-block' : 'none';
+      // Skip/Pass button only shows after drawing a card
+      const showSkip = isTurn && G.active && G.drawnThisTurn;
+      const skipBtn = document.getElementById('skip-btn');
+      skipBtn.style.display = showSkip ? 'inline-block' : 'none';
+      skipBtn.textContent = 'PASS';
+      // Show stack warning in turn msg if mustStack
+      if (isTurn && G.mustStack) {
+        document.getElementById('turn-msg').textContent = `STACK +${G.stackPending} OR DRAW!`;
+      }
     }
     function renderOpps() {
       const bid = bottomPlayerId();
@@ -1848,19 +1909,21 @@
       const el = document.getElementById('discard-live'); el.innerHTML = '';
       const face = buildCardFace(top, true);
       face.style.cssText = 'position:absolute;inset:0;border-radius:11px;';
-      face.style.boxShadow = '0 6px 18px rgba(0,0,0,.6)';
+      const glow = GLOW[G.currentColor] || 'rgba(255,255,255,.4)';
+      face.style.boxShadow = `0 0 28px ${glow}, 0 0 56px ${glow.replace('.85', '.4')}, 0 8px 24px rgba(0,0,0,.6)`;
       face.classList.add('slam');
       el.appendChild(face);
-      // Clean border on discard zone matching current color
+      // Also glow the discard zone border
       const dz = document.getElementById('discard-zone');
-      dz.style.boxShadow = '';
-      dz.style.borderColor = BG[G.currentColor] || 'rgba(255,255,255,.28)';
+      const borderColor = BG[G.currentColor] || 'rgba(255,255,255,.28)';
+      dz.style.boxShadow = `0 0 22px ${glow.replace('.85', '.5')}, inset 0 0 12px ${glow.replace('.85', '.15')}`;
+      dz.style.borderColor = borderColor;
       dz.style.borderStyle = 'solid';
     }
     function renderColorRing() {
       const r = document.getElementById('color-ring');
       r.style.background = BG[G.currentColor] || '#888';
-      r.style.boxShadow = '';
+      r.style.boxShadow = `0 0 20px ${GLOW[G.currentColor] || 'rgba(255,255,255,.3)'}`;
     }
     function renderScores() { G.players.forEach(p => { const e = document.getElementById(`sv-${p.id}`); if (e) e.textContent = p.hand.length }) }
     function renderTurnMsg() {
@@ -1884,23 +1947,30 @@
       el.appendChild(buildCardFace(card, false));
       return el;
     }
-    const BG_GRAD = BG; // same flat colors, no gradient
+    const BG_GRAD = {
+      red: 'linear-gradient(145deg, #ff2a3c, #c4001c)',
+      blue: 'linear-gradient(145deg, #1a8fff, #0055cc)',
+      green: 'linear-gradient(145deg, #22cc00, #0d7a00)',
+      yellow: 'linear-gradient(145deg, #ffe040, #e6a800)',
+      wild: 'linear-gradient(145deg, #2a0a4e, #0d0520)'
+    };
     function buildCardFace(card, large) {
       const el = document.createElement('div'); el.className = 'cf';
-      const s = sym(card), sz = large ? 42 : 32, osW = large ? 54 : 40, osH = large ? 78 : 58, csz = large ? 16 : 13;
+      const s = sym(card), sz = large ? 46 : 36, osW = large ? 58 : 44, osH = large ? 82 : 62, csz = large ? 16 : 13;
       if (card.type === 'wild' || card.type === 'wild4') {
-        el.style.background = '#111';
+        el.style.background = '#1a0a2e';
         el.innerHTML = `<div class="wild-quad"><span></span><span></span><span></span><span></span></div>
-      <div class="cf-oval" style="width:${osW}px;height:${osH}px;background:rgba(0,0,0,0.35)"></div>
-      <div class="cf-sym" style="font-size:${sz}px;color:#fff;text-shadow:0 0 8px rgba(255,255,255,0.8),1px 1px 5px rgba(0,0,0,.6);z-index:2;font-weight:900">${s}</div>
-      <div class="cf-tl" style="color:#fff;font-size:${csz}px;text-shadow:1px 1px 3px rgba(0,0,0,.5);font-weight:900">${s}</div>
-      <div class="cf-br" style="color:#fff;font-size:${csz}px;text-shadow:1px 1px 3px rgba(0,0,0,.5);font-weight:900">${s}</div>`;
+      <div class="cf-oval" style="width:${osW}px;height:${osH}px;background:rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.5)"></div>
+      <div class="cf-sym" style="font-size:${sz}px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.9),0 0 20px rgba(255,255,255,.4);z-index:2;font-weight:900">${s}</div>
+      <div class="cf-tl" style="color:#fff;font-size:${csz}px;text-shadow:0 1px 4px rgba(0,0,0,.8)">${s}</div>
+      <div class="cf-br" style="color:#fff;font-size:${csz}px;text-shadow:0 1px 4px rgba(0,0,0,.8)">${s}</div>`;
       } else {
-        el.style.background = BG[card.color];
-        el.innerHTML = `<div class="cf-oval" style="width:${osW}px;height:${osH}px;background:rgba(255,255,255,0.18)"></div>
-      <div class="cf-sym sc-${card.color}" style="font-size:${sz}px;color:#fff;font-weight:900;text-shadow:0 1px 4px rgba(0,0,0,0.5)">${s}</div>
-      <div class="cf-tl sc-${card.color}" style="font-size:${csz}px;color:#fff;font-weight:900">${s}</div>
-      <div class="cf-br sc-${card.color}" style="font-size:${csz}px;color:#fff;font-weight:900">${s}</div>`;
+        el.style.background = BG_GRAD[card.color] || BG[card.color];
+        const ovalBg = card.color === 'yellow' ? 'rgba(0,0,0,.18)' : 'rgba(255,255,255,.18)';
+        el.innerHTML = `<div class="cf-oval" style="width:${osW}px;height:${osH}px;background:${ovalBg};border:2px solid rgba(255,255,255,.45)"></div>
+      <div class="cf-sym sc-${card.color}" style="font-size:${sz}px">${s}</div>
+      <div class="cf-tl sc-${card.color}" style="font-size:${csz}px">${s}</div>
+      <div class="cf-br sc-${card.color}" style="font-size:${csz}px">${s}</div>`;
       }
       return el;
     }
@@ -1914,15 +1984,18 @@
       if (!p || p.cpu) return;
       const card = p.hand[idx];
       if (!canPlayCard(card)) return;
+      G.drawnThisTurn = false;
+      // If player stacks a draw card, reset mustStack (applyCard will re-set it for next victim)
+      if (G.mustStack && (card.type === 'draw2' || card.type === 'wild4')) {
+        G.mustStack = false; // applyCard will handle stacking logic
+      }
       p.hand.splice(idx, 1);
       burst(card.color);
-      G.drawnThisTurn = false; // playing a card resets draw state
       flyCard(card, 'bottom', 'discard', () => {
         if (card.type === 'wild' || card.type === 'wild4') {
           G.pendingWild = { card, whoIdx: mode === 'online' ? myOnlineIndex : G.curIdx };
           document.getElementById('color-picker').style.display = 'flex';
-          playSound('wild');
-        } else { playSound('play'); applyCard(card, mode === 'online' ? myOnlineIndex : G.curIdx); }
+        } else applyCard(card, mode === 'online' ? myOnlineIndex : G.curIdx);
       });
     }
 
@@ -1931,23 +2004,37 @@
       const pi = mode === 'online' ? myOnlineIndex : G.curIdx;
       const p = G.players[pi];
       if (!p || p.cpu) return;
-      if (G.drawnThisTurn) { showMsg('ALREADY DREW!', 1000); return; } // can only draw once per turn
+
+      // If a stack penalty is pending and player can't stack, force-draw all pending cards
+      if (G.mustStack) {
+        const total = G.stackPending || 0;
+        G.stackPending = 0; G.stackType = null; G.mustStack = false;
+        showMsg(`+${total} CARDS!`, 1400);
+        giveForceDraw(pi, total);
+        setTimeout(() => { advance(); afterTurn(); renderAll(); }, total * 180 + 300);
+        return;
+      }
+
+      if (G.drawnThisTurn) return; // already drew, wait for play or skip
       if (G.deck.length === 0) reshuffleDiscard();
       const c = G.deck.pop();
-      playSound('draw');
+      G.drawnThisTurn = true;
       flyCard(c, 'deck', 'bottom', () => {
         p.hand.push(c);
         G.unoFlags[pi] = false;
-        G.drawnThisTurn = true;
         if (canPlayCard(c)) {
-          showMsg('PLAY IT!', 1200);
-          // Player can play it or skip — skip button now visible
+          showMsg('PLAY IT!', 1000);
+          renderAll(); // show play option — skip button will appear for passing
         } else {
-          showMsg('PASS!', 1000);
-          // Auto-advance since no playable card
-          setTimeout(() => { advance(); afterTurn(); }, 800);
+          showMsg('NO LUCK — PASS', 1100);
+          renderAll();
+          // Auto-end turn after a short delay
+          setTimeout(() => {
+            G.drawnThisTurn = false;
+            advance();
+            afterTurn();
+          }, 900);
         }
-        renderAll();
       });
     }
 
@@ -1956,9 +2043,9 @@
       const pi = mode === 'online' ? myOnlineIndex : G.curIdx;
       const p = G.players[pi];
       if (!p || p.cpu) return;
-      if (!G.drawnThisTurn) { showMsg('DRAW FIRST!', 1000); return; }
-      showMsg('PASS!', 800);
-      playSound('skip');
+      if (!G.drawnThisTurn) { toast('Draw a card first!'); return; }
+      G.drawnThisTurn = false;
+      showMsg('PASS', 800);
       advance();
       afterTurn();
     }
@@ -1968,7 +2055,6 @@
       G.unoFlags[pi] = true;
       document.getElementById('uno-btn').style.display = 'none';
       showMsg('UNO!', 1200); burst('wild');
-      playSound('uno');
     }
 
     function pickColor(c) {
@@ -1988,37 +2074,58 @@
     function applyCard(card, whoIdx) {
       G.discardPile.push(card);
       if (card.color !== 'wild') G.currentColor = card.color;
+
       if (card.type === 'skip') {
-        // Advance to next player, then skip them (advance again), so the player after them goes
-        advance(); // move to the player who gets skipped
         showMsg('SKIP!');
-        playSound('skip');
-        advance(); // skip past them
+        advance(); // move to next player (the one to skip)
+        advance(); // skip them, move to the one after
       } else if (card.type === 'reverse') {
         G.direction *= -1;
         document.getElementById('dir-ring').textContent = G.direction === 1 ? '↻' : '↺';
         showMsg('REVERSE!');
-        playSound('reverse');
         if (G.players.length === 2) { advance(); advance(); } // 2-player reverse acts like skip
         else advance();
       } else if (card.type === 'draw2') {
-        advance(); // move to the player who must draw
-        const victimIdx = G.curIdx;
         showMsg('+2 CARDS!');
-        playSound('draw2');
-        giveForceDraw(victimIdx, 2);
-        advance(); // skip past the victim
+        // Accumulate stack penalty
+        G.stackPending = (G.stackPending || 0) + 2;
+        G.stackType = 'draw2';
+        advance(); // move to victim
+        const victim = G.players[G.curIdx];
+        const canStack = victim.hand.some(c => c.type === 'draw2');
+        if (canStack) {
+          // Victim's turn — they may stack or be forced to draw
+          G.mustStack = true;
+          if (checkWin(whoIdx)) return;
+          afterTurn();
+          return;
+        }
+        // No stack possible — force draw and skip victim
+        giveForceDraw(G.curIdx, G.stackPending);
+        showMsg(`+${G.stackPending} CARDS!`, 1400);
+        G.stackPending = 0; G.stackType = null; G.mustStack = false;
+        advance();
       } else if (card.type === 'wild4') {
-        advance(); // move to the player who must draw
-        const victimIdx = G.curIdx;
         showMsg('+4 CARDS!');
-        playSound('draw4');
-        giveForceDraw(victimIdx, 4);
-        advance(); // skip past the victim
+        G.stackPending = (G.stackPending || 0) + 4;
+        G.stackType = 'wild4';
+        advance(); // move to victim
+        const victim = G.players[G.curIdx];
+        const canStack = victim.hand.some(c => c.type === 'wild4');
+        if (canStack) {
+          G.mustStack = true;
+          if (checkWin(whoIdx)) return;
+          afterTurn();
+          return;
+        }
+        giveForceDraw(G.curIdx, G.stackPending);
+        showMsg(`+${G.stackPending} CARDS!`, 1400);
+        G.stackPending = 0; G.stackType = null; G.mustStack = false;
+        advance();
       } else {
-        playSound('play');
         advance();
       }
+
       if (checkWin(whoIdx)) return;
       afterTurn();
     }
@@ -2034,7 +2141,7 @@
     }
     function advance() { G.curIdx = (G.curIdx + G.direction + G.players.length) % G.players.length }
     function afterTurn() {
-      G.drawnThisTurn = false; // reset draw flag for new turn
+      G.drawnThisTurn = false;
       if (mode === 'online') pushStateToFirebase();
       renderAll();
       if (!G.active) return;
@@ -2056,7 +2163,6 @@
       } return false;
     }
     function triggerWin(p) {
-      playSound('win');
       document.getElementById('end-title').textContent = `${p.name.toUpperCase()} WINS!`;
       document.getElementById('end-sub').textContent = p.cpu ? 'The CPU robot reigns supreme…' : 'Incredible — UNO champion! 🏆';
       // Build scorecard: winner first, then rest sorted by cards remaining
@@ -2099,6 +2205,20 @@
       setTimeout(() => {
         if (oz) oz.style.opacity = '1';
         if (!G.active) return;
+
+        // If forced to take stack penalty and can't stack, draw and pass
+        if (G.mustStack) {
+          const canStackCard = p.hand.find(c => canPlayCard(c));
+          if (!canStackCard) {
+            const total = G.stackPending || 0;
+            G.stackPending = 0; G.stackType = null; G.mustStack = false;
+            showMsg(`+${total} CARDS!`, 1400);
+            giveForceDraw(G.curIdx, total);
+            setTimeout(() => { advance(); afterTurn(); }, total * 180 + 400);
+            return;
+          }
+        }
+
         const order = ['wild4', 'draw2', 'skip', 'reverse', 'wild', 'number'];
         let best = -1;
         for (const t of order) {
@@ -2106,15 +2226,15 @@
           if (fi !== -1) { best = fi; break }
         }
         if (best === -1) {
+          // Draw one card and end turn
           if (G.deck.length === 0) reshuffleDiscard();
           const drawn = G.deck.pop();
-          playSound('draw');
           const bid = bottomPlayerId();
           const tz = p.id === bid ? 'bottom' : `opp-${p.id}`;
           flyCard(drawn, 'deck', tz, () => {
             p.hand.push(drawn);
-            // Try to play drawn card
             if (canPlayCard(drawn)) {
+              // AI plays the drawn card
               setTimeout(() => {
                 const i2 = p.hand.lastIndexOf(drawn);
                 if (i2 !== -1) {
@@ -2123,13 +2243,20 @@
                   flyCard(drawn, tz, 'discard', () => applyCard(drawn, G.curIdx));
                 } renderAll();
               }, 500);
-            } else { advance(); afterTurn(); renderAll() }
+            } else {
+              // Can't play drawn card — end turn
+              renderAll();
+              setTimeout(() => { advance(); afterTurn(); }, 400);
+            }
           });
           return;
         }
-        const card = p.hand.splice(best, 1)[0]; burst(card.color);
+        const card = p.hand.splice(best, 1)[0];
+        if (card.type === 'wild4') {
+          G.mustStack = false; // will be re-evaluated in applyCard
+        }
+        burst(card.color);
         if (card.type === 'wild' || card.type === 'wild4') G.currentColor = aiPickColor(p);
-        else playSound('play');
         const bid = bottomPlayerId();
         const fz = p.id === bid ? 'bottom' : `opp-${p.id}`;
         flyCard(card, fz, 'discard', () => applyCard(card, G.curIdx));
@@ -2247,96 +2374,6 @@
     // ══════════════════════════════════════════
     // KEYBOARD
     // ══════════════════════════════════════════
-    // ══════════════════════════════════════════
-    // SOUND ENGINE (Web Audio API)
-    // ══════════════════════════════════════════
-    let _audioCtx = null;
-    function getAudioCtx() {
-      if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      return _audioCtx;
-    }
-    function playSound(type) {
-      try {
-        const ctx = getAudioCtx();
-        const now = ctx.currentTime;
-        const gain = ctx.createGain();
-        gain.connect(ctx.destination);
-        if (type === 'play') {
-          // Card played — quick satisfying thwack
-          const osc = ctx.createOscillator(); osc.connect(gain);
-          osc.type = 'triangle'; osc.frequency.setValueAtTime(520, now); osc.frequency.exponentialRampToValueAtTime(320, now + 0.12);
-          gain.gain.setValueAtTime(0.28, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-          osc.start(now); osc.stop(now + 0.18);
-        } else if (type === 'draw') {
-          // Drawing card — soft swish
-          const buf = ctx.createBuffer(1, ctx.sampleRate * 0.15, ctx.sampleRate);
-          const data = buf.getChannelData(0);
-          for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 1.5) * 0.4;
-          const src = ctx.createBufferSource(); src.buffer = buf; src.connect(gain);
-          gain.gain.setValueAtTime(0.5, now);
-          src.start(now);
-        } else if (type === 'skip') {
-          // Skip — two short beeps descending
-          [480, 320].forEach((freq, i) => {
-            const osc = ctx.createOscillator(); osc.connect(gain);
-            osc.type = 'square'; osc.frequency.value = freq;
-            const t = now + i * 0.1;
-            gain.gain.setValueAtTime(0.08, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
-            osc.start(t); osc.stop(t + 0.09);
-          });
-        } else if (type === 'reverse') {
-          // Reverse — rising then falling sweep
-          const osc = ctx.createOscillator(); osc.connect(gain);
-          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, now); osc.frequency.linearRampToValueAtTime(600, now + 0.15); osc.frequency.linearRampToValueAtTime(200, now + 0.3);
-          gain.gain.setValueAtTime(0.12, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
-          osc.start(now); osc.stop(now + 0.32);
-        } else if (type === 'draw2') {
-          // +2 — two quick punchy hits
-          [0, 0.14].forEach(delay => {
-            const osc = ctx.createOscillator(); osc.connect(gain);
-            osc.type = 'triangle'; osc.frequency.setValueAtTime(280, now + delay); osc.frequency.exponentialRampToValueAtTime(140, now + delay + 0.12);
-            gain.gain.setValueAtTime(0.3, now + delay); gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.14);
-            osc.start(now + delay); osc.stop(now + delay + 0.14);
-          });
-        } else if (type === 'draw4') {
-          // +4 — four punchy hits
-          [0, 0.1, 0.2, 0.3].forEach(delay => {
-            const osc = ctx.createOscillator(); osc.connect(gain);
-            osc.type = 'triangle'; osc.frequency.setValueAtTime(260, now + delay); osc.frequency.exponentialRampToValueAtTime(120, now + delay + 0.1);
-            gain.gain.setValueAtTime(0.28, now + delay); gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.12);
-            osc.start(now + delay); osc.stop(now + delay + 0.12);
-          });
-        } else if (type === 'wild') {
-          // Wild — sparkly ascending arpeggio
-          [261, 329, 392, 523].forEach((freq, i) => {
-            const osc = ctx.createOscillator(); osc.connect(gain);
-            osc.type = 'sine'; osc.frequency.value = freq;
-            const t = now + i * 0.08;
-            gain.gain.setValueAtTime(0.18, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
-            osc.start(t); osc.stop(t + 0.22);
-          });
-        } else if (type === 'uno') {
-          // UNO! — triumphant fanfare
-          [440, 554, 659, 880].forEach((freq, i) => {
-            const osc = ctx.createOscillator(); osc.connect(gain);
-            osc.type = 'triangle'; osc.frequency.value = freq;
-            const t = now + i * 0.1;
-            gain.gain.setValueAtTime(0.22, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-            osc.start(t); osc.stop(t + 0.25);
-          });
-        } else if (type === 'win') {
-          // Win — victory chord
-          [261, 329, 392, 523, 659].forEach((freq, i) => {
-            const osc = ctx.createOscillator(); osc.connect(gain);
-            osc.type = 'sine'; osc.frequency.value = freq;
-            const t = now + i * 0.06;
-            gain.gain.setValueAtTime(0.2, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
-            osc.start(t); osc.stop(t + 0.6);
-          });
-        }
-      } catch (e) { /* audio not supported */ }
-    }
-
     document.addEventListener('keydown', e => {
       if (e.key === 'd' || e.key === 'D') humanDraw();
       if (e.key === 'u' || e.key === 'U') callUno();
