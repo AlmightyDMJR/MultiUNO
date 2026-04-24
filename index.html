@@ -938,35 +938,6 @@
       box-shadow: 0 10px 36px rgba(108, 92, 231, .7)
     }
 
-    /* ── WAITING OVERLAY ── */
-    #wait-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(6, 7, 18, .88);
-      backdrop-filter: blur(6px);
-      z-index: 250;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 14px
-    }
-
-    #wait-overlay p {
-      color: var(--muted);
-      font-family: 'Bebas Neue', cursive;
-      font-size: 20px;
-      letter-spacing: 3px;
-      text-align: center
-    }
-
-    #wait-overlay .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba(255, 255, 255, .1);
-      border-top-color: rgba(255, 255, 255, .55)
-    }
-
     /* ══════════════════════════════════════════════════
    UNO CARD STYLES
 ══════════════════════════════════════════════════ */
@@ -1379,12 +1350,6 @@
 
     <div id="scores-panel"></div>
 
-    <!-- Waiting for online opponent -->
-    <div id="wait-overlay">
-      <div class="spinner"></div>
-      <p id="wait-msg">Waiting for players…</p>
-    </div>
-
     <div id="end-overlay">
       <h1 id="end-title">WINNER!</h1>
       <p id="end-sub"></p>
@@ -1705,18 +1670,9 @@
         const r = snap.val();
         applyRoomToG(r, orderedPlayers);
         renderAll();
-        // If it's my turn, show actions; else wait overlay
+        // Never block the board — everyone watches play unfold live
         const isMyTurn = G.curIdx === myIndex && !G.players[myIndex].cpu;
-        // Only show wait overlay in online mode for human opponent turns
-        const otherIsHuman = !G.players[G.curIdx].cpu;
-        document.getElementById('wait-overlay').style.display = (!isMyTurn && G.active && otherIsHuman) ? 'flex' : 'none';
-        if ((!isMyTurn) && G.active && otherIsHuman) {
-          const currentPlayer = G.players[G.curIdx];
-          document.getElementById('wait-msg').textContent = `${currentPlayer.name.toUpperCase()}'S TURN…`;
-        }
-        if (G.active && !isMyTurn && !G.players[G.curIdx].cpu) { }// other human's turn
         if (G.active && !isMyTurn && G.players[G.curIdx].cpu && isHost) { setTimeout(aiTurn, 900) }
-        if (!G.active) { document.getElementById('wait-overlay').style.display = 'none' }
       });
       unsubscribes.push(() => ref.off('value', off));
     }
@@ -1757,7 +1713,6 @@
       SCREENS.forEach(s => document.getElementById(s).classList.add('out'));
       document.getElementById('game-screen').style.display = 'block';
       document.getElementById('end-overlay').style.display = 'none';
-      document.getElementById('wait-overlay').style.display = 'none';
       buildOppZones();
       buildScoresPanel();
       createStars();
