@@ -1329,7 +1329,7 @@
     <div id="action-bar">
       <div id="turn-msg">YOUR TURN</div>
       <button class="action-btn" id="uno-btn" onclick="callUno()">UNO!</button>
-      <button class="action-btn" id="skip-btn" onclick="humanSkip()">SKIP TURN</button>
+      <button class="action-btn" id="skip-btn" onclick="humanSkip()">PASS TURN</button>
     </div>
 
     <div id="bottom-zone">
@@ -1645,7 +1645,8 @@
       G = {
         players: state.players, deck: state.deck, discardPile: state.discardPile,
         currentColor: state.currentColor, direction: state.direction, curIdx: state.curIdx,
-        active: true, pendingWild: null, unoFlags: state.players.map(() => false)
+        active: true, pendingWild: null, unoFlags: state.players.map(() => false),
+        drawnThisTurn: false
       };
       showGameScreen();
       renderAll();
@@ -1890,16 +1891,16 @@
       if (card.type === 'wild' || card.type === 'wild4') {
         el.style.background = '#111';
         el.innerHTML = `<div class="wild-quad"><span></span><span></span><span></span><span></span></div>
-      <div class="cf-oval" style="width:${osW}px;height:${osH}px;background:rgba(0,0,0,0)"></div>
-      <div class="cf-sym" style="font-size:${sz}px;color:#fff;text-shadow:1px 1px 5px rgba(0,0,0,.6);z-index:2">${s}</div>
-      <div class="cf-tl" style="color:#fff;font-size:${csz}px;text-shadow:1px 1px 3px rgba(0,0,0,.5)">${s}</div>
-      <div class="cf-br" style="color:#fff;font-size:${csz}px;text-shadow:1px 1px 3px rgba(0,0,0,.5)">${s}</div>`;
+      <div class="cf-oval" style="width:${osW}px;height:${osH}px;background:rgba(0,0,0,0.35)"></div>
+      <div class="cf-sym" style="font-size:${sz}px;color:#fff;text-shadow:0 0 8px rgba(255,255,255,0.8),1px 1px 5px rgba(0,0,0,.6);z-index:2;font-weight:900">${s}</div>
+      <div class="cf-tl" style="color:#fff;font-size:${csz}px;text-shadow:1px 1px 3px rgba(0,0,0,.5);font-weight:900">${s}</div>
+      <div class="cf-br" style="color:#fff;font-size:${csz}px;text-shadow:1px 1px 3px rgba(0,0,0,.5);font-weight:900">${s}</div>`;
       } else {
         el.style.background = BG[card.color];
-        el.innerHTML = `<div class="cf-oval" style="width:${osW}px;height:${osH}px"></div>
-      <div class="cf-sym sc-${card.color}" style="font-size:${sz}px">${s}</div>
-      <div class="cf-tl sc-${card.color}" style="font-size:${csz}px">${s}</div>
-      <div class="cf-br sc-${card.color}" style="font-size:${csz}px">${s}</div>`;
+        el.innerHTML = `<div class="cf-oval" style="width:${osW}px;height:${osH}px;background:rgba(255,255,255,0.18)"></div>
+      <div class="cf-sym sc-${card.color}" style="font-size:${sz}px;color:#fff;font-weight:900;text-shadow:0 1px 4px rgba(0,0,0,0.5)">${s}</div>
+      <div class="cf-tl sc-${card.color}" style="font-size:${csz}px;color:#fff;font-weight:900">${s}</div>
+      <div class="cf-br sc-${card.color}" style="font-size:${csz}px;color:#fff;font-weight:900">${s}</div>`;
       }
       return el;
     }
@@ -1915,11 +1916,13 @@
       if (!canPlayCard(card)) return;
       p.hand.splice(idx, 1);
       burst(card.color);
+      G.drawnThisTurn = false; // playing a card resets draw state
       flyCard(card, 'bottom', 'discard', () => {
         if (card.type === 'wild' || card.type === 'wild4') {
           G.pendingWild = { card, whoIdx: mode === 'online' ? myOnlineIndex : G.curIdx };
           document.getElementById('color-picker').style.display = 'flex';
-        } else applyCard(card, mode === 'online' ? myOnlineIndex : G.curIdx);
+          playSound('wild');
+        } else { playSound('play'); applyCard(card, mode === 'online' ? myOnlineIndex : G.curIdx); }
       });
     }
 
@@ -1928,13 +1931,22 @@
       const pi = mode === 'online' ? myOnlineIndex : G.curIdx;
       const p = G.players[pi];
       if (!p || p.cpu) return;
+      if (G.drawnThisTurn) { showMsg('ALREADY DREW!', 1000); return; } // can only draw once per turn
       if (G.deck.length === 0) reshuffleDiscard();
       const c = G.deck.pop();
+      playSound('draw');
       flyCard(c, 'deck', 'bottom', () => {
         p.hand.push(c);
         G.unoFlags[pi] = false;
-        if (canPlayCard(c)) showMsg('PLAY IT!', 1000);
-        else { showMsg('NO LUCK', 1000); advance(); afterTurn() }
+        G.drawnThisTurn = true;
+        if (canPlayCard(c)) {
+          showMsg('PLAY IT!', 1200);
+          // Player can play it or skip — skip button now visible
+        } else {
+          showMsg('PASS!', 1000);
+          // Auto-advance since no playable card
+          setTimeout(() => { advance(); afterTurn(); }, 800);
+        }
         renderAll();
       });
     }
@@ -1944,7 +1956,9 @@
       const pi = mode === 'online' ? myOnlineIndex : G.curIdx;
       const p = G.players[pi];
       if (!p || p.cpu) return;
-      showMsg('SKIPPED', 1000);
+      if (!G.drawnThisTurn) { showMsg('DRAW FIRST!', 1000); return; }
+      showMsg('PASS!', 800);
+      playSound('skip');
       advance();
       afterTurn();
     }
@@ -1954,6 +1968,7 @@
       G.unoFlags[pi] = true;
       document.getElementById('uno-btn').style.display = 'none';
       showMsg('UNO!', 1200); burst('wild');
+      playSound('uno');
     }
 
     function pickColor(c) {
@@ -1973,16 +1988,37 @@
     function applyCard(card, whoIdx) {
       G.discardPile.push(card);
       if (card.color !== 'wild') G.currentColor = card.color;
-      const nxt = (G.curIdx + G.direction + G.players.length) % G.players.length;
-      if (card.type === 'skip') { showMsg('SKIP!'); advance(); advance() }
-      else if (card.type === 'reverse') {
+      if (card.type === 'skip') {
+        // Advance to next player, then skip them (advance again), so the player after them goes
+        advance(); // move to the player who gets skipped
+        showMsg('SKIP!');
+        playSound('skip');
+        advance(); // skip past them
+      } else if (card.type === 'reverse') {
         G.direction *= -1;
         document.getElementById('dir-ring').textContent = G.direction === 1 ? '↻' : '↺';
         showMsg('REVERSE!');
-        if (G.players.length === 2) advance(); advance();
-      } else if (card.type === 'draw2') { showMsg('+2 CARDS!'); giveForceDraw(nxt, 2); advance(); advance() }
-      else if (card.type === 'wild4') { showMsg('+4 CARDS!'); giveForceDraw(nxt, 4); advance(); advance() }
-      else advance();
+        playSound('reverse');
+        if (G.players.length === 2) { advance(); advance(); } // 2-player reverse acts like skip
+        else advance();
+      } else if (card.type === 'draw2') {
+        advance(); // move to the player who must draw
+        const victimIdx = G.curIdx;
+        showMsg('+2 CARDS!');
+        playSound('draw2');
+        giveForceDraw(victimIdx, 2);
+        advance(); // skip past the victim
+      } else if (card.type === 'wild4') {
+        advance(); // move to the player who must draw
+        const victimIdx = G.curIdx;
+        showMsg('+4 CARDS!');
+        playSound('draw4');
+        giveForceDraw(victimIdx, 4);
+        advance(); // skip past the victim
+      } else {
+        playSound('play');
+        advance();
+      }
       if (checkWin(whoIdx)) return;
       afterTurn();
     }
@@ -1998,6 +2034,7 @@
     }
     function advance() { G.curIdx = (G.curIdx + G.direction + G.players.length) % G.players.length }
     function afterTurn() {
+      G.drawnThisTurn = false; // reset draw flag for new turn
       if (mode === 'online') pushStateToFirebase();
       renderAll();
       if (!G.active) return;
@@ -2019,6 +2056,7 @@
       } return false;
     }
     function triggerWin(p) {
+      playSound('win');
       document.getElementById('end-title').textContent = `${p.name.toUpperCase()} WINS!`;
       document.getElementById('end-sub').textContent = p.cpu ? 'The CPU robot reigns supreme…' : 'Incredible — UNO champion! 🏆';
       // Build scorecard: winner first, then rest sorted by cards remaining
@@ -2070,6 +2108,7 @@
         if (best === -1) {
           if (G.deck.length === 0) reshuffleDiscard();
           const drawn = G.deck.pop();
+          playSound('draw');
           const bid = bottomPlayerId();
           const tz = p.id === bid ? 'bottom' : `opp-${p.id}`;
           flyCard(drawn, 'deck', tz, () => {
@@ -2090,6 +2129,7 @@
         }
         const card = p.hand.splice(best, 1)[0]; burst(card.color);
         if (card.type === 'wild' || card.type === 'wild4') G.currentColor = aiPickColor(p);
+        else playSound('play');
         const bid = bottomPlayerId();
         const fz = p.id === bid ? 'bottom' : `opp-${p.id}`;
         flyCard(card, fz, 'discard', () => applyCard(card, G.curIdx));
@@ -2207,6 +2247,96 @@
     // ══════════════════════════════════════════
     // KEYBOARD
     // ══════════════════════════════════════════
+    // ══════════════════════════════════════════
+    // SOUND ENGINE (Web Audio API)
+    // ══════════════════════════════════════════
+    let _audioCtx = null;
+    function getAudioCtx() {
+      if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return _audioCtx;
+    }
+    function playSound(type) {
+      try {
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+        const gain = ctx.createGain();
+        gain.connect(ctx.destination);
+        if (type === 'play') {
+          // Card played — quick satisfying thwack
+          const osc = ctx.createOscillator(); osc.connect(gain);
+          osc.type = 'triangle'; osc.frequency.setValueAtTime(520, now); osc.frequency.exponentialRampToValueAtTime(320, now + 0.12);
+          gain.gain.setValueAtTime(0.28, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.start(now); osc.stop(now + 0.18);
+        } else if (type === 'draw') {
+          // Drawing card — soft swish
+          const buf = ctx.createBuffer(1, ctx.sampleRate * 0.15, ctx.sampleRate);
+          const data = buf.getChannelData(0);
+          for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 1.5) * 0.4;
+          const src = ctx.createBufferSource(); src.buffer = buf; src.connect(gain);
+          gain.gain.setValueAtTime(0.5, now);
+          src.start(now);
+        } else if (type === 'skip') {
+          // Skip — two short beeps descending
+          [480, 320].forEach((freq, i) => {
+            const osc = ctx.createOscillator(); osc.connect(gain);
+            osc.type = 'square'; osc.frequency.value = freq;
+            const t = now + i * 0.1;
+            gain.gain.setValueAtTime(0.08, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+            osc.start(t); osc.stop(t + 0.09);
+          });
+        } else if (type === 'reverse') {
+          // Reverse — rising then falling sweep
+          const osc = ctx.createOscillator(); osc.connect(gain);
+          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, now); osc.frequency.linearRampToValueAtTime(600, now + 0.15); osc.frequency.linearRampToValueAtTime(200, now + 0.3);
+          gain.gain.setValueAtTime(0.12, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+          osc.start(now); osc.stop(now + 0.32);
+        } else if (type === 'draw2') {
+          // +2 — two quick punchy hits
+          [0, 0.14].forEach(delay => {
+            const osc = ctx.createOscillator(); osc.connect(gain);
+            osc.type = 'triangle'; osc.frequency.setValueAtTime(280, now + delay); osc.frequency.exponentialRampToValueAtTime(140, now + delay + 0.12);
+            gain.gain.setValueAtTime(0.3, now + delay); gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.14);
+            osc.start(now + delay); osc.stop(now + delay + 0.14);
+          });
+        } else if (type === 'draw4') {
+          // +4 — four punchy hits
+          [0, 0.1, 0.2, 0.3].forEach(delay => {
+            const osc = ctx.createOscillator(); osc.connect(gain);
+            osc.type = 'triangle'; osc.frequency.setValueAtTime(260, now + delay); osc.frequency.exponentialRampToValueAtTime(120, now + delay + 0.1);
+            gain.gain.setValueAtTime(0.28, now + delay); gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.12);
+            osc.start(now + delay); osc.stop(now + delay + 0.12);
+          });
+        } else if (type === 'wild') {
+          // Wild — sparkly ascending arpeggio
+          [261, 329, 392, 523].forEach((freq, i) => {
+            const osc = ctx.createOscillator(); osc.connect(gain);
+            osc.type = 'sine'; osc.frequency.value = freq;
+            const t = now + i * 0.08;
+            gain.gain.setValueAtTime(0.18, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+            osc.start(t); osc.stop(t + 0.22);
+          });
+        } else if (type === 'uno') {
+          // UNO! — triumphant fanfare
+          [440, 554, 659, 880].forEach((freq, i) => {
+            const osc = ctx.createOscillator(); osc.connect(gain);
+            osc.type = 'triangle'; osc.frequency.value = freq;
+            const t = now + i * 0.1;
+            gain.gain.setValueAtTime(0.22, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+            osc.start(t); osc.stop(t + 0.25);
+          });
+        } else if (type === 'win') {
+          // Win — victory chord
+          [261, 329, 392, 523, 659].forEach((freq, i) => {
+            const osc = ctx.createOscillator(); osc.connect(gain);
+            osc.type = 'sine'; osc.frequency.value = freq;
+            const t = now + i * 0.06;
+            gain.gain.setValueAtTime(0.2, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+            osc.start(t); osc.stop(t + 0.6);
+          });
+        }
+      } catch (e) { /* audio not supported */ }
+    }
+
     document.addEventListener('keydown', e => {
       if (e.key === 'd' || e.key === 'D') humanDraw();
       if (e.key === 'u' || e.key === 'U') callUno();
