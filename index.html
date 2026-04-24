@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MultiUNO Online</title>
+  <title>Multi UNO Online</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap"
     rel="stylesheet">
@@ -1715,18 +1715,9 @@
         const r = snap.val();
         applyRoomToG(r, orderedPlayers);
         renderAll();
-        // If it's my turn, show actions; else wait overlay
         const isMyTurn = G.curIdx === myIndex && !G.players[myIndex].cpu;
-        // Only show wait overlay in online mode for human opponent turns
-        const otherIsHuman = !G.players[G.curIdx].cpu;
-        document.getElementById('wait-overlay').style.display = (!isMyTurn && G.active && otherIsHuman) ? 'flex' : 'none';
-        if ((!isMyTurn) && G.active && otherIsHuman) {
-          const currentPlayer = G.players[G.curIdx];
-          document.getElementById('wait-msg').textContent = `${currentPlayer.name.toUpperCase()}'S TURN…`;
-        }
-        if (G.active && !isMyTurn && !G.players[G.curIdx].cpu) { }// other human's turn
+        document.getElementById('wait-overlay').style.display = 'none';
         if (G.active && !isMyTurn && G.players[G.curIdx].cpu && isHost) { setTimeout(aiTurn, 900) }
-        if (!G.active) { document.getElementById('wait-overlay').style.display = 'none' }
       });
       unsubscribes.push(() => ref.off('value', off));
     }
