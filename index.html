@@ -26,16 +26,16 @@
     }
 
     :root {
-      --red: #e8192c;
-      --blue: #0066cc;
-      --green: #148a00;
-      --yellow: #ffc21a;
-      --wild: #111;
-      --red-g: rgba(232, 25, 44, .65);
-      --blue-g: rgba(0, 102, 204, .65);
-      --green-g: rgba(20, 138, 0, .65);
-      --yellow-g: rgba(255, 194, 26, .65);
-      --wild-g: rgba(162, 155, 254, .65);
+      --red: #f01428;
+      --blue: #0077ee;
+      --green: #1aaa00;
+      --yellow: #ffcc00;
+      --wild: #1a0a2e;
+      --red-g: rgba(240, 20, 40, .85);
+      --blue-g: rgba(0, 119, 238, .85);
+      --green-g: rgba(26, 170, 0, .85);
+      --yellow-g: rgba(255, 204, 0, .85);
+      --wild-g: rgba(180, 120, 255, .85);
       --bg: #0a0c14;
       --surface: rgba(255, 255, 255, .05);
       --border: rgba(255, 255, 255, .11);
@@ -439,8 +439,8 @@
     }
 
     #draw-pile {
-      width: 72px;
-      height: 108px;
+      width: 84px;
+      height: 120px;
       position: relative;
       cursor: pointer;
       transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), filter .3s;
@@ -458,10 +458,10 @@
     .pile-back {
       position: absolute;
       inset: 0;
-      border-radius: 10px;
-      background: #1e1e4e;
-      border: 3px solid #fff;
-      box-shadow: inset 0 0 0 2px #444, 0 5px 14px rgba(0, 0, 0, .5);
+      border-radius: 12px;
+      background: linear-gradient(145deg, #2a2a6e, #14144e);
+      border: 3px solid rgba(255, 255, 255, .85);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .1), 0 5px 14px rgba(0, 0, 0, .5);
       display: flex;
       align-items: center;
       justify-content: center
@@ -472,7 +472,7 @@
       font-family: 'Bebas Neue', cursive;
       font-size: 17px;
       letter-spacing: 2.5px;
-      color: rgba(255, 255, 255, .5)
+      color: rgba(255, 255, 255, .65)
     }
 
     .pile-back:nth-child(1) {
@@ -488,25 +488,26 @@
     }
 
     #discard-zone {
-      width: 72px;
-      height: 108px;
-      border-radius: 10px;
-      border: 2px dashed rgba(255, 255, 255, .16);
+      width: 92px;
+      height: 130px;
+      border-radius: 12px;
+      border: 2px dashed rgba(255, 255, 255, .28);
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 9px;
-      color: rgba(255, 255, 255, .1);
+      color: rgba(255, 255, 255, .15);
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      flex-shrink: 0
+      flex-shrink: 0;
+      transition: box-shadow .5s
     }
 
     #discard-live {
       position: absolute;
       inset: 0;
-      border-radius: 10px;
+      border-radius: 12px;
       overflow: visible
     }
 
@@ -820,14 +821,14 @@
     #end-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, .84);
-      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, .88);
+      backdrop-filter: blur(14px);
       z-index: 300;
       display: none;
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      gap: 16px
+      gap: 0
     }
 
     #end-overlay h1 {
@@ -835,17 +836,91 @@
       font-size: clamp(48px, 9vw, 80px);
       color: #fff;
       letter-spacing: 5px;
-      text-shadow: 0 0 60px rgba(255, 220, 80, .5);
-      text-align: center
+      text-shadow: 0 0 60px rgba(255, 220, 80, .7), 0 0 120px rgba(255, 220, 80, .3);
+      text-align: center;
+      margin-bottom: 4px
     }
 
     #end-overlay p {
       color: var(--muted);
-      font-size: 14px
+      font-size: 14px;
+      margin-bottom: 20px
+    }
+
+    #scorecard {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: min(420px, 90vw);
+      margin-bottom: 22px;
+      max-height: 40vh;
+      overflow-y: auto;
+      padding: 0 4px
+    }
+
+    .sc-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 12px;
+      padding: 10px 16px;
+      transition: background .2s
+    }
+
+    .sc-row.winner {
+      background: rgba(255, 215, 0, .13);
+      border-color: rgba(255, 215, 0, .4);
+      box-shadow: 0 0 20px rgba(255, 215, 0, .15)
+    }
+
+    .sc-rank {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 22px;
+      color: var(--muted);
+      width: 28px;
+      flex-shrink: 0;
+      text-align: center
+    }
+
+    .sc-row.winner .sc-rank {
+      color: var(--gold);
+      text-shadow: 0 0 10px rgba(255, 215, 0, .5)
+    }
+
+    .sc-name {
+      flex: 1;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .sc-row.winner .sc-name {
+      color: #fff
+    }
+
+    .sc-cards-left {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 18px;
+      color: var(--muted);
+      white-space: nowrap
+    }
+
+    .sc-row.winner .sc-cards-left {
+      color: var(--gold)
+    }
+
+    .sc-trophy {
+      font-size: 20px;
+      flex-shrink: 0
     }
 
     #play-again-btn {
-      padding: 13px 38px;
+      padding: 14px 44px;
       border-radius: 28px;
       background: linear-gradient(135deg, #6c5ce7, #a29bfe);
       border: none;
@@ -854,13 +929,13 @@
       font-size: 22px;
       letter-spacing: 3px;
       cursor: pointer;
-      margin-top: 8px;
-      box-shadow: 0 6px 28px rgba(108, 92, 231, .45);
+      box-shadow: 0 6px 28px rgba(108, 92, 231, .5);
       transition: all .2s
     }
 
     #play-again-btn:hover {
-      transform: scale(1.07)
+      transform: scale(1.07);
+      box-shadow: 0 10px 36px rgba(108, 92, 231, .7)
     }
 
     /* ── WAITING OVERLAY ── */
@@ -938,53 +1013,53 @@
 
     /* Color classes */
     .c-red {
-      background: var(--red);
-      border: 3px solid #fff;
-      box-shadow: inset 0 0 0 2px var(--red), 0 5px 16px rgba(0, 0, 0, .45)
+      background: linear-gradient(145deg, #ff2a3c, #c4001c);
+      border: 3px solid rgba(255, 255, 255, .9);
+      box-shadow: 0 0 14px rgba(240, 20, 40, .5), 0 5px 16px rgba(0, 0, 0, .45)
     }
 
     .c-blue {
-      background: var(--blue);
-      border: 3px solid #fff;
-      box-shadow: inset 0 0 0 2px var(--blue), 0 5px 16px rgba(0, 0, 0, .45)
+      background: linear-gradient(145deg, #1a8fff, #0055cc);
+      border: 3px solid rgba(255, 255, 255, .9);
+      box-shadow: 0 0 14px rgba(0, 119, 238, .5), 0 5px 16px rgba(0, 0, 0, .45)
     }
 
     .c-green {
-      background: var(--green);
-      border: 3px solid #fff;
-      box-shadow: inset 0 0 0 2px var(--green), 0 5px 16px rgba(0, 0, 0, .45)
+      background: linear-gradient(145deg, #22cc00, #0d7a00);
+      border: 3px solid rgba(255, 255, 255, .9);
+      box-shadow: 0 0 14px rgba(26, 170, 0, .5), 0 5px 16px rgba(0, 0, 0, .45)
     }
 
     .c-yellow {
-      background: var(--yellow);
-      border: 3px solid #fff;
-      box-shadow: inset 0 0 0 2px var(--yellow), 0 5px 16px rgba(0, 0, 0, .45)
+      background: linear-gradient(145deg, #ffe040, #e6a800);
+      border: 3px solid rgba(255, 255, 255, .9);
+      box-shadow: 0 0 14px rgba(255, 204, 0, .5), 0 5px 16px rgba(0, 0, 0, .45)
     }
 
     .c-wild {
-      background: var(--wild);
-      border: 3px solid #fff;
-      box-shadow: inset 0 0 0 2px #555, 0 5px 16px rgba(0, 0, 0, .45)
+      background: linear-gradient(145deg, #2a0a4e, #0d0520);
+      border: 3px solid rgba(255, 255, 255, .85);
+      box-shadow: 0 0 14px rgba(150, 80, 255, .5), 0 5px 16px rgba(0, 0, 0, .45)
     }
 
     .card.playable.c-red:hover {
-      box-shadow: inset 0 0 0 2px var(--red), 0 0 26px rgba(232, 25, 44, .7), 0 14px 32px rgba(0, 0, 0, .4)
+      box-shadow: 0 0 34px rgba(240, 20, 40, .9), 0 0 60px rgba(240, 20, 40, .4), 0 14px 32px rgba(0, 0, 0, .4)
     }
 
     .card.playable.c-blue:hover {
-      box-shadow: inset 0 0 0 2px var(--blue), 0 0 26px rgba(0, 102, 204, .7), 0 14px 32px rgba(0, 0, 0, .4)
+      box-shadow: 0 0 34px rgba(0, 119, 238, .9), 0 0 60px rgba(0, 119, 238, .4), 0 14px 32px rgba(0, 0, 0, .4)
     }
 
     .card.playable.c-green:hover {
-      box-shadow: inset 0 0 0 2px var(--green), 0 0 26px rgba(20, 138, 0, .7), 0 14px 32px rgba(0, 0, 0, .4)
+      box-shadow: 0 0 34px rgba(26, 170, 0, .9), 0 0 60px rgba(26, 170, 0, .4), 0 14px 32px rgba(0, 0, 0, .4)
     }
 
     .card.playable.c-yellow:hover {
-      box-shadow: inset 0 0 0 2px var(--yellow), 0 0 26px rgba(255, 194, 26, .7), 0 14px 32px rgba(0, 0, 0, .4)
+      box-shadow: 0 0 34px rgba(255, 204, 0, .9), 0 0 60px rgba(255, 204, 0, .4), 0 14px 32px rgba(0, 0, 0, .4)
     }
 
     .card.playable.c-wild:hover {
-      box-shadow: inset 0 0 0 2px #777, 0 0 26px rgba(162, 155, 254, .7), 0 14px 32px rgba(0, 0, 0, .4)
+      box-shadow: 0 0 34px rgba(180, 100, 255, .9), 0 0 60px rgba(180, 100, 255, .4), 0 14px 32px rgba(0, 0, 0, .4)
     }
 
     /* Card face */
@@ -1046,7 +1121,7 @@
     }
 
     .sc-yellow {
-      color: #b8860b
+      color: #7a5500
     }
 
     .sc-wild {
@@ -1313,7 +1388,8 @@
     <div id="end-overlay">
       <h1 id="end-title">WINNER!</h1>
       <p id="end-sub"></p>
-      <button id="play-again-btn" onclick="playAgain()">PLAY AGAIN</button>
+      <div id="scorecard"></div>
+      <button id="play-again-btn" onclick="playAgain()">🔄 PLAY AGAIN</button>
     </div>
   </div>
 
@@ -1544,8 +1620,8 @@
     // ══════════════════════════════════════════
     const COLORS = ['red', 'blue', 'green', 'yellow'];
     const ACTIONS = ['skip', 'reverse', 'draw2'];
-    const BG = { red: '#e8192c', blue: '#0066cc', green: '#148a00', yellow: '#ffc21a', wild: '#111' };
-    const GLOW = { red: 'rgba(232,25,44,.65)', blue: 'rgba(0,102,204,.65)', green: 'rgba(20,138,0,.65)', yellow: 'rgba(255,194,26,.65)', wild: 'rgba(162,155,254,.65)' };
+    const BG = { red: '#f01428', blue: '#0077ee', green: '#1aaa00', yellow: '#ffcc00', wild: '#1a0a2e' };
+    const GLOW = { red: 'rgba(240,20,40,.85)', blue: 'rgba(0,119,238,.85)', green: 'rgba(26,170,0,.85)', yellow: 'rgba(255,204,0,.85)', wild: 'rgba(180,100,255,.85)' };
 
     // ══════════════════════════════════════════
     // DECK HELPERS
@@ -1631,7 +1707,13 @@
         renderAll();
         // If it's my turn, show actions; else wait overlay
         const isMyTurn = G.curIdx === myIndex && !G.players[myIndex].cpu;
-        document.getElementById('wait-overlay').style.display = (!isMyTurn && G.active) ? 'flex' : 'none';
+        // Only show wait overlay in online mode for human opponent turns
+        const otherIsHuman = !G.players[G.curIdx].cpu;
+        document.getElementById('wait-overlay').style.display = (!isMyTurn && G.active && otherIsHuman) ? 'flex' : 'none';
+        if ((!isMyTurn) && G.active && otherIsHuman) {
+          const currentPlayer = G.players[G.curIdx];
+          document.getElementById('wait-msg').textContent = `${currentPlayer.name.toUpperCase()}'S TURN…`;
+        }
         if (G.active && !isMyTurn && !G.players[G.curIdx].cpu) { }// other human's turn
         if (G.active && !isMyTurn && G.players[G.curIdx].cpu && isHost) { setTimeout(aiTurn, 900) }
         if (!G.active) { document.getElementById('wait-overlay').style.display = 'none' }
@@ -1809,10 +1891,17 @@
       const top = G.discardPile[G.discardPile.length - 1]; if (!top) return;
       const el = document.getElementById('discard-live'); el.innerHTML = '';
       const face = buildCardFace(top, true);
-      face.style.cssText = 'position:absolute;inset:0;border-radius:9px;';
-      face.style.boxShadow = `0 0 32px ${GLOW[G.currentColor] || 'rgba(255,255,255,.3)'},0 8px 24px rgba(0,0,0,.5)`;
+      face.style.cssText = 'position:absolute;inset:0;border-radius:11px;';
+      const glow = GLOW[G.currentColor] || 'rgba(255,255,255,.4)';
+      face.style.boxShadow = `0 0 28px ${glow}, 0 0 56px ${glow.replace('.85', '.4')}, 0 8px 24px rgba(0,0,0,.6)`;
       face.classList.add('slam');
       el.appendChild(face);
+      // Also glow the discard zone border
+      const dz = document.getElementById('discard-zone');
+      const borderColor = BG[G.currentColor] || 'rgba(255,255,255,.28)';
+      dz.style.boxShadow = `0 0 22px ${glow.replace('.85', '.5')}, inset 0 0 12px ${glow.replace('.85', '.15')}`;
+      dz.style.borderColor = borderColor;
+      dz.style.borderStyle = 'solid';
     }
     function renderColorRing() {
       const r = document.getElementById('color-ring');
@@ -1841,18 +1930,25 @@
       el.appendChild(buildCardFace(card, false));
       return el;
     }
+    const BG_GRAD = {
+      red: 'linear-gradient(145deg, #ff2a3c, #c4001c)',
+      blue: 'linear-gradient(145deg, #1a8fff, #0055cc)',
+      green: 'linear-gradient(145deg, #22cc00, #0d7a00)',
+      yellow: 'linear-gradient(145deg, #ffe040, #e6a800)',
+      wild: 'linear-gradient(145deg, #2a0a4e, #0d0520)'
+    };
     function buildCardFace(card, large) {
       const el = document.createElement('div'); el.className = 'cf';
-      const s = sym(card), sz = large ? 40 : 32, osW = large ? 50 : 38, osH = large ? 74 : 56, csz = large ? 15 : 13;
+      const s = sym(card), sz = large ? 42 : 32, osW = large ? 54 : 40, osH = large ? 78 : 58, csz = large ? 16 : 13;
       if (card.type === 'wild' || card.type === 'wild4') {
-        el.style.background = '#111';
+        el.style.background = '#1a0a2e';
         el.innerHTML = `<div class="wild-quad"><span></span><span></span><span></span><span></span></div>
       <div class="cf-oval" style="width:${osW}px;height:${osH}px;background:rgba(0,0,0,0)"></div>
       <div class="cf-sym" style="font-size:${sz}px;color:#fff;text-shadow:1px 1px 5px rgba(0,0,0,.6);z-index:2">${s}</div>
       <div class="cf-tl" style="color:#fff;font-size:${csz}px;text-shadow:1px 1px 3px rgba(0,0,0,.5)">${s}</div>
       <div class="cf-br" style="color:#fff;font-size:${csz}px;text-shadow:1px 1px 3px rgba(0,0,0,.5)">${s}</div>`;
       } else {
-        el.style.background = BG[card.color];
+        el.style.background = BG_GRAD[card.color] || BG[card.color];
         el.innerHTML = `<div class="cf-oval" style="width:${osW}px;height:${osH}px"></div>
       <div class="cf-sym sc-${card.color}" style="font-size:${sz}px">${s}</div>
       <div class="cf-tl sc-${card.color}" style="font-size:${csz}px">${s}</div>
@@ -1978,6 +2074,25 @@
     function triggerWin(p) {
       document.getElementById('end-title').textContent = `${p.name.toUpperCase()} WINS!`;
       document.getElementById('end-sub').textContent = p.cpu ? 'The CPU robot reigns supreme…' : 'Incredible — UNO champion! 🏆';
+      // Build scorecard: winner first, then rest sorted by cards remaining
+      const sorted = [...G.players].sort((a, b) => {
+        if (a.id === p.id) return -1;
+        if (b.id === p.id) return 1;
+        return a.hand.length - b.hand.length;
+      });
+      const sc = document.getElementById('scorecard');
+      sc.innerHTML = '';
+      sorted.forEach((pl, i) => {
+        const isWinner = pl.id === p.id;
+        const row = document.createElement('div');
+        row.className = 'sc-row' + (isWinner ? ' winner' : '');
+        row.innerHTML = `
+          <div class="sc-rank">${i + 1}</div>
+          <div class="sc-name">${escH(pl.name)}${pl.cpu ? ' 🤖' : ''}</div>
+          <div class="sc-cards-left">${isWinner ? '0 cards' : `${pl.hand.length} card${pl.hand.length !== 1 ? 's' : ''} left`}</div>
+          <div class="sc-trophy">${isWinner ? '🏆' : i === 1 ? '🥈' : i === 2 ? '🥉' : ''}</div>`;
+        sc.appendChild(row);
+      });
       document.getElementById('end-overlay').style.display = 'flex';
       if (mode === 'online') pushStateToFirebase();
     }
