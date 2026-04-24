@@ -1,4 +1,4 @@
-﻿      /* Ã¢â€â‚¬Ã¢â€â‚¬ BOTTOM PLAYER Ã¢â€â‚¬Ã¢â€â‚¬ */
+      /* Ã¢â€â‚¬Ã¢â€â‚¬ BOTTOM PLAYER Ã¢â€â‚¬Ã¢â€â‚¬ */
       #bottom-zone {
         position: absolute;
         bottom: 0;
@@ -8,7 +8,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding-bottom: 8px;
+        padding: 10px 0 8px;
       }
 
       #bottom-name-lbl {
@@ -16,7 +16,7 @@
         font-size: 13px;
         letter-spacing: 2.5px;
         color: var(--muted);
-        margin-bottom: 3px;
+        margin-bottom: 6px;
         text-transform: uppercase;
       }
 
@@ -47,7 +47,7 @@
       /* Ã¢â€â‚¬Ã¢â€â‚¬ STATUS / ACTION BAR Ã¢â€â‚¬Ã¢â€â‚¬ */
       #action-bar {
         position: absolute;
-        bottom: max(120px, 17.5vh);
+        bottom: max(148px, 21vh);
         left: 50%;
         transform: translateX(-50%);
         display: flex;
