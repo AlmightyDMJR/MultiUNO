@@ -6,6 +6,8 @@ function humanPlay(idx) {
   const pi = mode === 'online' ? myOnlineIndex : G.curIdx;
   const p = G.players[pi];
   if (!p || p.cpu) return;
+  // Block play if it's not this player's turn
+  if (mode === 'local' && pi !== G.curIdx) return;
   const card = p.hand[idx];
   if (!canPlayCard(card)) return;
   G.drawnThisTurn = false;
@@ -30,8 +32,13 @@ function humanDraw() {
   const pi = mode === 'online' ? myOnlineIndex : G.curIdx;
   const p = G.players[pi];
   if (!p || p.cpu) return;
+  // Block draw if it's not this player's turn
+  if (mode === 'local' && pi !== G.curIdx) return;
+  // Block draw while a stack is being resolved by animation
+  if (_resolvingStack) return;
 
   if (G.stackPending > 0) {
+    // Player accepts the stack penalty — draw all stacked cards
     playSfx('penalty');
     const total = G.stackPending;
     G.stackPending = 0;
@@ -74,6 +81,7 @@ function humanSkip() {
   const pi = mode === 'online' ? myOnlineIndex : G.curIdx;
   const p = G.players[pi];
   if (!p || p.cpu) return;
+  if (mode === 'local' && pi !== G.curIdx) return;
   if (!G.drawnThisTurn) {
     toast('Draw a card first!');
     return;

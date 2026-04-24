@@ -2,6 +2,9 @@
 // GAME LOGIC — Apply Card, Advance, UNO Timers, Stacking
 // ══════════════════════════════════════════
 
+// Guard flag to prevent multiple simultaneous turn resolutions
+let _resolvingStack = false;
+
 function clearUnoTimer(idx) {
   if (!G.unoTimers) G.unoTimers = {};
   if (G.unoTimers[idx]) {
@@ -48,26 +51,36 @@ function onHandCountChanged(idx) {
   }, 3000);
 }
 
+/**
+ * Check if the current player must accept a stack penalty because they
+ * have no matching draw card. Returns true if the penalty was auto-applied
+ * (caller should stop processing the turn). Returns false if the player
+ * CAN stack (let them play) or if there is no pending stack.
+ */
 function autoResolveStackForCurrent() {
   if (!G.mustStack || G.stackPending <= 0 || !G.stackType) return false;
+  if (_resolvingStack) return false; // already resolving, don't double-fire
   const p = G.players[G.curIdx];
   if (!p) return false;
   const canStack = p.hand.some((c) => c.type === G.stackType);
   if (canStack) return false;
 
+  // Player cannot stack — force draw the full penalty
+  _resolvingStack = true;
   const total = G.stackPending;
+  const penaltyIdx = G.curIdx; // snapshot before any advance
   G.stackPending = 0;
   G.stackType = null;
   G.mustStack = false;
   playSfx('penalty');
   showMsg(`+${total} CARDS!`, 1400);
-  giveForceDraw(G.curIdx, total);
+  giveForceDraw(penaltyIdx, total);
   if (mode === 'online') pushStateToFirebase();
   setTimeout(
     () => {
+      _resolvingStack = false;
       advance();
       afterTurn();
-      renderAll();
     },
     total * 220 + 420,
   );
@@ -88,7 +101,7 @@ function applyCard(card, whoIdx) {
     playSfx('skip');
     G.direction *= -1;
     document.getElementById('dir-ring').style.transform =
-      `translateY(-50%) scaleX(${G.direction})`;
+      `scaleX(${G.direction})`;
     showMsg('REVERSE!', 900);
     if (G.players.length === 2) {
       advance();
@@ -98,21 +111,23 @@ function applyCard(card, whoIdx) {
     }
   } else if (card.type === 'draw2') {
     playSfx('stack');
-    showMsg('+2 STACK!');
     G.stackPending = (G.stackPending || 0) + 2;
     G.stackType = 'draw2';
     G.mustStack = true;
+    showMsg(`+${G.stackPending} STACK!`);
     advance();
     if (checkWin(whoIdx)) return;
+    // Check if next player can stack; if not, auto-resolve
     if (autoResolveStackForCurrent()) return;
+    // Next player CAN stack — hand control to them
     afterTurn();
     return;
   } else if (card.type === 'wild4') {
     playSfx('stack');
-    showMsg('+4 STACK!');
     G.stackPending = (G.stackPending || 0) + 4;
     G.stackType = 'wild4';
     G.mustStack = true;
+    showMsg(`+${G.stackPending} STACK!`);
     advance();
     if (checkWin(whoIdx)) return;
     if (autoResolveStackForCurrent()) return;
@@ -153,6 +168,7 @@ function advance() {
 }
 function afterTurn() {
   G.drawnThisTurn = false;
+  // If there's a pending stack the current player can't answer, auto-resolve
   if (autoResolveStackForCurrent()) {
     renderAll();
     return;

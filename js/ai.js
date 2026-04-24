@@ -3,6 +3,7 @@
 // ══════════════════════════════════════════
 function aiTurn() {
   if (!G.active) return;
+  if (_resolvingStack) return; // wait for stack resolution to finish
   const p = G.players[G.curIdx];
   if (!p.cpu) return;
   const oz = document.getElementById(`oz-${p.id}`);
@@ -11,12 +12,13 @@ function aiTurn() {
     () => {
       if (oz) oz.style.opacity = '1';
       if (!G.active) return;
+      if (_resolvingStack) return;
 
       // If forced to take stack penalty and can't stack, draw and pass
-      if (G.mustStack) {
+      if (G.mustStack && G.stackPending > 0) {
         const canStackCard = p.hand.find((c) => canPlayCard(c));
         if (!canStackCard) {
-          const total = G.stackPending || 0;
+          const total = G.stackPending;
           G.stackPending = 0;
           G.stackType = null;
           G.mustStack = false;
@@ -95,9 +97,6 @@ function aiTurn() {
       }
       const card = p.hand.splice(best, 1)[0];
       onHandCountChanged(G.curIdx);
-      if (card.type === 'wild4') {
-        G.mustStack = false; // will be re-evaluated in applyCard
-      }
       playSfx('play');
       burst(card.color);
       if (card.type === 'wild' || card.type === 'wild4')

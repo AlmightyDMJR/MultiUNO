@@ -140,6 +140,14 @@ function playAgain() {
     else toast('Waiting for host to restart…');
   }
 }
+function backToHome() {
+  document.getElementById('end-overlay').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'none';
+  clearAllUnoTimers();
+  G = {};
+  if (mode === 'online') leaveRoom();
+  else showScreen('home-screen');
+}
 
 // ── Init ──
 showScreen('home-screen');
