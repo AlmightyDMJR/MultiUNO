@@ -1,0 +1,86 @@
+      /* Ã¢â€â‚¬Ã¢â€â‚¬ COLOR PICKER Ã¢â€â‚¬Ã¢â€â‚¬ */
+      #color-picker {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        z-index: 200;
+        background: rgba(6, 7, 18, 0.97);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px 30px;
+        backdrop-filter: blur(18px);
+        box-shadow: 0 22px 64px rgba(0, 0, 0, 0.65);
+      }
+
+      #color-picker h3 {
+        font-family: 'Bebas Neue', cursive;
+        font-size: 22px;
+        color: #fff;
+        letter-spacing: 3px;
+      }
+
+      #cp-btns {
+        display: flex;
+        gap: 13px;
+      }
+
+      .cp-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.22);
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .cp-btn:hover {
+        transform: scale(1.22);
+        box-shadow: 0 0 24px var(--gc);
+      }
+
+      /* Ã¢â€â‚¬Ã¢â€â‚¬ SCORES PANEL Ã¢â€â‚¬Ã¢â€â‚¬ */
+      #scores-panel {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        z-index: 20;
+      }
+
+      .s-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 5px 10px;
+        text-align: right;
+        min-width: 68px;
+      }
+
+      .s-lbl {
+        font-size: 9px;
+        color: var(--muted);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 72px;
+      }
+
+      .s-val {
+        font-family: 'Bebas Neue', cursive;
+        font-size: 22px;
+        color: #fff;
+        line-height: 1;
+      }
+
+      /* Ã¢â€â‚¬Ã¢â€â‚¬ END OVERLAY Ã¢â€â‚¬Ã¢â€â‚¬ */

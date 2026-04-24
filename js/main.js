@@ -17,6 +17,7 @@ function showGameScreen() {
   document.getElementById('game-screen').style.display = 'block';
   document.getElementById('end-overlay').style.display = 'none';
   document.getElementById('wait-overlay').style.display = 'none';
+  _lastBottomId = null; // force rebuild of opponent zones
   buildOppZones();
   buildScoresPanel();
   createStars();

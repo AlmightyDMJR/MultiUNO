@@ -1,0 +1,324 @@
+﻿      /* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+   SCREENS
+Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
+      .screen {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        z-index: 600;
+        background: var(--bg);
+        transition:
+          opacity 0.5s,
+          transform 0.5s;
+        pointer-events: all;
+      }
+
+      .screen.out {
+        opacity: 0;
+        transform: scale(0.96);
+        pointer-events: none;
+      }
+
+      .screen.gone {
+        display: none;
+      }
+
+      /* Ã¢â€â‚¬Ã¢â€â‚¬ HOME Ã¢â€â‚¬Ã¢â€â‚¬ */
+      #home-screen {
+        background: radial-gradient(
+          ellipse at 50% 38%,
+          #1a1040 0%,
+          var(--bg) 68%
+        );
+      }
+
+      .logo {
+        font-family: 'Bebas Neue', cursive;
+        font-size: clamp(72px, 14vw, 120px);
+        letter-spacing: 8px;
+        color: #fff;
+        line-height: 0.9;
+        text-align: center;
+        text-shadow:
+          0 0 60px rgba(232, 25, 44, 0.45),
+          0 0 120px rgba(0, 102, 204, 0.25);
+      }
+
+      .logo span {
+        color: var(--red);
+      }
+
+      .tagline {
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin: 10px 0 36px;
+        text-align: center;
+      }
+
+      .home-btns {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: min(340px, 90vw);
+      }
+
+      .btn-primary {
+        padding: 15px 28px;
+        border-radius: 14px;
+        border: none;
+        cursor: pointer;
+        font-family: 'Bebas Neue', cursive;
+        font-size: 20px;
+        letter-spacing: 3px;
+        color: #fff;
+        transition:
+          transform 0.18s,
+          box-shadow 0.18s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0);
+        transition: background 0.18s;
+      }
+
+      .btn-primary:hover::after {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .btn-primary:active {
+        transform: scale(0.97);
+      }
+
+      .btn-red {
+        background: linear-gradient(135deg, #e63946, #9e1c26);
+        box-shadow: 0 6px 28px rgba(232, 25, 44, 0.35);
+      }
+
+      .btn-red:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 36px rgba(232, 25, 44, 0.5);
+      }
+
+      .btn-blue {
+        background: linear-gradient(135deg, #1a7fd4, #0d4a8a);
+        box-shadow: 0 6px 28px rgba(0, 102, 204, 0.35);
+      }
+
+      .btn-blue:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 36px rgba(0, 102, 204, 0.5);
+      }
+
+      .btn-ghost {
+        padding: 12px 28px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--muted);
+        cursor: pointer;
+        font-family: 'Bebas Neue', cursive;
+        font-size: 18px;
+        letter-spacing: 2px;
+        transition: all 0.18s;
+      }
+
+      .btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.09);
+        color: var(--text);
+      }
+
+      /* Ã¢â€â‚¬Ã¢â€â‚¬ PANEL (shared card-style container) Ã¢â€â‚¬Ã¢â€â‚¬ */
+      .panel {
+        background: rgba(12, 14, 26, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 28px 32px;
+        width: min(400px, 94vw);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+      }
+
+      .panel h2 {
+        font-family: 'Bebas Neue', cursive;
+        font-size: 22px;
+        letter-spacing: 2.5px;
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 14px;
+      }
+
+      .field label {
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+
+      .field input {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 11px 14px;
+        color: var(--text);
+        font-family: 'Nunito', sans-serif;
+        font-size: 15px;
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .field input:focus {
+        border-color: rgba(255, 255, 255, 0.35);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+      }
+
+      .field input::placeholder {
+        color: var(--muted);
+      }
+
+      /* room code display */
+      .room-code-display {
+        font-family: 'Bebas Neue', cursive;
+        font-size: 52px;
+        letter-spacing: 12px;
+        color: #fff;
+        text-align: center;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+
+      .room-code-display:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .room-code-hint {
+        font-size: 11px;
+        color: var(--muted);
+        text-align: center;
+        letter-spacing: 1px;
+        margin-top: 6px;
+      }
+
+      /* lobby player list */
+      .lobby-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 14px 0;
+        min-height: 60px;
+      }
+
+      .lobby-player {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 14px;
+      }
+
+      .lp-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #4cd44c;
+        flex-shrink: 0;
+        box-shadow: 0 0 8px rgba(76, 212, 76, 0.5);
+      }
+
+      .lp-dot.host {
+        background: var(--gold);
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+      }
+
+      .lp-name {
+        flex: 1;
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--text);
+      }
+
+      .lp-badge {
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+
+      .lobby-status {
+        font-size: 12px;
+        letter-spacing: 1px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 4px;
+      }
+
+      /* waiting spinner */
+      .spinner {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 2.5px solid rgba(255, 255, 255, 0.1);
+        border-top-color: rgba(255, 255, 255, 0.6);
+        animation: spin 0.7s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* toast */
+      #toast {
+        position: fixed;
+        top: 22px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(20, 22, 36, 0.97);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 11px 22px;
+        font-size: 13px;
+        color: var(--text);
+        z-index: 9999;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+        white-space: nowrap;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      /* error */
+      .err-msg {
+        font-size: 12px;
+        color: #ff6b6b;
+        letter-spacing: 0.5px;
+        margin-top: -8px;
+        margin-bottom: 4px;
+        min-height: 16px;
+      }

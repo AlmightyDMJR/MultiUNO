@@ -49,14 +49,22 @@ function buildScoresPanel() {
   G.players.forEach((p) => {
     const b = document.createElement('div');
     b.className = 's-box';
-    b.innerHTML = `<div class="s-lbl">${escH(p.name.substring(0, 6))}</div><div class="s-val" id="sv-${p.id}">7</div>`;
+    b.innerHTML = `<div class="s-lbl">${escH(p.name.substring(0, 10))}</div><div class="s-val" id="sv-${p.id}">7</div>`;
     el.appendChild(b);
   });
 }
 
 // ── Render Functions ──
+let _lastBottomId = null;
 function renderAll() {
   if (!G.players) return;
+  // Rebuild opponent zones when the bottom player changes (turn swap in local multi-human)
+  const curBid = bottomPlayerId();
+  if (curBid !== _lastBottomId) {
+    _lastBottomId = curBid;
+    buildOppZones();
+    buildScoresPanel();
+  }
   renderBottom();
   renderOpps();
   renderDiscard();
