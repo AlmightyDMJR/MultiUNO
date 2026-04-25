@@ -91,6 +91,7 @@ function startLocalGame() {
 }
 
 // ── Win ──
+let _winTriggered = false;
 function checkWin(whoIdx) {
   const p = G.players[whoIdx];
   if (p && p.hand.length === 0) {
@@ -102,6 +103,8 @@ function checkWin(whoIdx) {
   return false;
 }
 function triggerWin(p) {
+  if (_winTriggered) return; // already showing end overlay
+  _winTriggered = true;
   clearAllUnoTimers();
   playSfx('win');
   document.getElementById('end-title').textContent =
@@ -133,6 +136,7 @@ function triggerWin(p) {
 }
 function playAgain() {
   document.getElementById('end-overlay').style.display = 'none';
+  _winTriggered = false;
   clearAllUnoTimers();
   if (mode === 'local') {
     startLocalGame();
@@ -144,6 +148,7 @@ function playAgain() {
 function backToHome() {
   document.getElementById('end-overlay').style.display = 'none';
   document.getElementById('game-screen').style.display = 'none';
+  _winTriggered = false;
   clearAllUnoTimers();
   G = {};
   if (mode === 'online') leaveRoom();

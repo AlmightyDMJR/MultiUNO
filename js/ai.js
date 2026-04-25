@@ -25,9 +25,12 @@ function aiTurn() {
           playSfx('penalty');
           showMsg(`+${total} CARDS!`, 1400);
           giveForceDraw(G.curIdx, total);
+          // Advance turn and push state IMMEDIATELY
+          advance();
+          if (mode === 'online') pushStateToFirebase();
+          renderAll();
           setTimeout(
             () => {
-              advance();
               afterTurn();
             },
             total * 220 + 420,

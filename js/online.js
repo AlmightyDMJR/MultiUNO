@@ -209,6 +209,8 @@ function enterOnlineGame(room) {
 function initOnlineListeners(room, orderedPlayers, myIndex) {
   myOnlineIndex = myIndex;
   mode = 'online';
+  _winTriggered = false;
+  G.active = true; // Initialize before first applyRoomToG so transition detection works
   // Build local G from room snapshot
   applyRoomToG(room, orderedPlayers);
   showGameScreen();

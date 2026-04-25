@@ -46,11 +46,13 @@ function humanDraw() {
     G.mustStack = false;
     showMsg(`+${total} CARDS!`, 1400);
     giveForceDraw(pi, total);
+    // Advance turn and push state IMMEDIATELY so Firebase has correct state
+    advance();
+    if (mode === 'online') pushStateToFirebase();
+    renderAll();
     setTimeout(
       () => {
-        advance();
         afterTurn();
-        renderAll();
       },
       total * 220 + 420,
     );

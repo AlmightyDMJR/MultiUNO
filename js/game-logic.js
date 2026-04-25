@@ -75,11 +75,13 @@ function autoResolveStackForCurrent() {
   playSfx('penalty');
   showMsg(`+${total} CARDS!`, 1400);
   giveForceDraw(penaltyIdx, total);
+  // Advance turn and push state IMMEDIATELY so Firebase has correct state
+  advance();
   if (mode === 'online') pushStateToFirebase();
+  renderAll();
   setTimeout(
     () => {
       _resolvingStack = false;
-      advance();
       afterTurn();
     },
     total * 220 + 420,
@@ -142,25 +144,30 @@ function applyCard(card, whoIdx) {
 }
 function giveForceDraw(toIdx, n) {
   const p = G.players[toIdx];
-  onHandCountChanged(toIdx);
   const bid = bottomPlayerId();
   const tz = p.id === bid ? 'bottom' : `opp-${p.id}`;
+  // Add cards to hand IMMEDIATELY so state is correct for Firebase sync
+  const drawnCards = [];
   for (let i = 0; i < n; i++) {
     if (G.deck.length === 0) reshuffleDiscard();
     const c = G.deck.pop();
     if (!c) continue;
+    p.hand.push(c);
+    drawnCards.push(c);
+  }
+  onHandCountChanged(toIdx);
+  // Fly animations are purely visual
+  drawnCards.forEach((c, i) => {
     flyCard(
       c,
       'deck',
       tz,
       () => {
-        p.hand.push(c);
-        onHandCountChanged(toIdx);
         renderAll();
       },
       i * 220,
     );
-  }
+  });
 }
 function advance() {
   G.curIdx =

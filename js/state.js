@@ -52,7 +52,6 @@ function applyRoomToG(room, orderedPlayers) {
   G.stackType = room.stackType || null;
   G.mustStack = !!room.mustStack;
   G.drawnThisTurn = !!room.drawnThisTurn;
-  G.active = room.status === 'playing';
   G.pendingWild = G.pendingWild || null;
   G.unoFlags =
     Array.isArray(room.unoFlags) &&
@@ -60,10 +59,18 @@ function applyRoomToG(room, orderedPlayers) {
       ? room.unoFlags
       : orderedPlayers.map(() => false);
   G.unoTimers = G.unoTimers || {};
-  // Check win
-  G.players.forEach((p) => {
-    if (p.hand.length === 0 && G.active) triggerWin(p);
-  });
+
+  // Detect game-over from status
+  const wasActive = G.active;
+  G.active = room.status === 'playing';
+
+  // If the game just ended (status changed to 'ended'), trigger the win overlay
+  if (wasActive && !G.active && room.status === 'ended') {
+    const winner = G.players.find((p) => p.hand.length === 0);
+    if (winner) {
+      setTimeout(() => triggerWin(winner), 400);
+    }
+  }
 }
 
 async function pushStateToFirebase() {
