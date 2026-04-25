@@ -7,9 +7,7 @@ function getRect(zone) {
   if (zone === 'deck')
     return document.getElementById('draw-pile').getBoundingClientRect();
   if (zone === 'discard')
-    return document
-      .getElementById('discard-zone')
-      .getBoundingClientRect();
+    return document.getElementById('discard-zone').getBoundingClientRect();
   if (zone === 'bottom') {
     return document.getElementById('bottom-hand').getBoundingClientRect();
   }
@@ -57,9 +55,7 @@ function flyCard(card, from, to, cb, delay = 0) {
       const raw = Math.min((now - startT) / DUR, 1);
       // ease-in-out-cubic
       const t =
-        raw < 0.5
-          ? 4 * raw * raw * raw
-          : 1 - Math.pow(-2 * raw + 2, 3) / 2;
+        raw < 0.5 ? 4 * raw * raw * raw : 1 - Math.pow(-2 * raw + 2, 3) / 2;
       const cx = fx + (tx - fx) * t;
       const cy = fy + (ty - fy) * t - Math.sin(raw * Math.PI) * arcH;
       const rot = (1 - t) * 9 * (from === 'deck' ? -1 : 1);
@@ -119,20 +115,21 @@ function animParts() {
     p.x += p.vx;
     p.y += p.vy;
     p.vy += 0.1;
-    p.life -= 0.018; // slower fade
+    const life = Math.max(p.life, 0);
     pctx.save();
-    pctx.globalAlpha = p.life;
+    pctx.globalAlpha = life;
     pctx.fillStyle = p.c;
     if (p.sq) {
       pctx.translate(p.x, p.y);
-      pctx.rotate(p.life * 4);
+      pctx.rotate(life * 4);
       pctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
     } else {
       pctx.beginPath();
-      pctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      pctx.arc(p.x, p.y, Math.max(0.01, p.size * life), 0, Math.PI * 2);
       pctx.fill();
     }
     pctx.restore();
+    p.life -= 0.018; // slower fade
   });
   requestAnimationFrame(animParts);
 }
