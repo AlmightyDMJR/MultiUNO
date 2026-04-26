@@ -3,14 +3,52 @@
 // ══════════════════════════════════════════
 
 // ── Opponent Zone Positions ──
-const OPP_POS = [
-  { top: '4%', left: '50%', txStr: 'translateX(-50%)' },
-  { top: '18%', left: '4%', txStr: 'translate(0,0)' },
-  { top: '18%', right: '4%', txStr: 'translate(0,0)' },
-  { top: '50%', left: '3%', txStr: 'translateY(-50%)' },
-  { top: '50%', right: '3%', txStr: 'translateY(-50%)' },
-  { top: '76%', left: '6%', txStr: 'translate(0,-50%)' },
-];
+// Positions arranged clockwise from bottom-left → left → top-left → top → top-right → right
+// so that the "next player" in turn order sits to the immediate left of the
+// bottom player and the sequence wraps around the table naturally.
+//
+// Layout for different opponent counts (N = number of opponents):
+//   N=1: top-center
+//   N=2: left, right
+//   N=3: left, top-center, right
+//   N=4: bottom-left, top-left, top-right, bottom-right
+//   N=5: bottom-left, top-left, top-center, top-right, bottom-right
+//   N=6: bottom-left, left, top-left, top-right, right, bottom-right
+const OPP_LAYOUTS = {
+  1: [
+    { top: '4%', left: '50%', txStr: 'translateX(-50%)' },                // top center
+  ],
+  2: [
+    { top: '40%', left: '3%', txStr: 'translateY(-50%)' },                // left
+    { top: '40%', right: '3%', txStr: 'translateY(-50%)' },               // right
+  ],
+  3: [
+    { top: '40%', left: '3%', txStr: 'translateY(-50%)' },                // left
+    { top: '4%', left: '50%', txStr: 'translateX(-50%)' },                // top center
+    { top: '40%', right: '3%', txStr: 'translateY(-50%)' },               // right
+  ],
+  4: [
+    { top: '72%', left: '4%', txStr: 'translate(0,-50%)' },               // bottom-left
+    { top: '14%', left: '4%', txStr: 'translate(0,0)' },                  // top-left
+    { top: '14%', right: '4%', txStr: 'translate(0,0)' },                 // top-right
+    { top: '72%', right: '4%', txStr: 'translate(0,-50%)' },              // bottom-right
+  ],
+  5: [
+    { top: '72%', left: '4%', txStr: 'translate(0,-50%)' },               // bottom-left
+    { top: '14%', left: '4%', txStr: 'translate(0,0)' },                  // top-left
+    { top: '4%', left: '50%', txStr: 'translateX(-50%)' },                // top center
+    { top: '14%', right: '4%', txStr: 'translate(0,0)' },                 // top-right
+    { top: '72%', right: '4%', txStr: 'translate(0,-50%)' },              // bottom-right
+  ],
+  6: [
+    { top: '72%', left: '4%', txStr: 'translate(0,-50%)' },               // bottom-left
+    { top: '40%', left: '3%', txStr: 'translateY(-50%)' },                // left
+    { top: '14%', left: '4%', txStr: 'translate(0,0)' },                  // top-left
+    { top: '14%', right: '4%', txStr: 'translate(0,0)' },                 // top-right
+    { top: '40%', right: '3%', txStr: 'translateY(-50%)' },               // right
+    { top: '72%', right: '4%', txStr: 'translate(0,-50%)' },              // bottom-right
+  ],
+};
 function bottomPlayerId() {
   if (mode === 'online') return G.players[myOnlineIndex]?.id;
   if (!G.players[G.curIdx].cpu) return G.players[G.curIdx].id;
@@ -22,13 +60,28 @@ function bottomPlayerId() {
   }
   return G.players[0].id;
 }
+/**
+ * Build opponent zones in clockwise seating order relative to the bottom player.
+ * The player immediately after the bottom player (by G.players index, wrapping)
+ * is placed on the left, and the sequence continues clockwise around the table.
+ */
 function buildOppZones() {
   const c = document.getElementById('opp-zones');
   c.innerHTML = '';
   const bid = bottomPlayerId();
-  const opps = G.players.filter((p) => p.id !== bid);
+  const bottomIdx = G.players.findIndex((p) => p.id === bid);
+  const n = G.players.length;
+
+  // Build opponents in clockwise seating order starting from the next player
+  const opps = [];
+  for (let i = 1; i < n; i++) {
+    const idx = (bottomIdx + i) % n;
+    opps.push(G.players[idx]);
+  }
+
+  const layout = OPP_LAYOUTS[opps.length] || OPP_LAYOUTS[6];
   opps.forEach((p, oi) => {
-    const pos = OPP_POS[oi] || OPP_POS[0];
+    const pos = layout[oi] || layout[0];
     const z = document.createElement('div');
     z.className = 'opp-zone';
     z.id = `oz-${p.id}`;

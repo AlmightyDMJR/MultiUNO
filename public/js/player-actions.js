@@ -1,14 +1,29 @@
 // ══════════════════════════════════════════
 // HUMAN ACTIONS
 // ══════════════════════════════════════════
+function canActThisTurn(pi) {
+  return pi === G.curIdx && !!G.players[pi] && !G.players[pi].cpu;
+}
+
+function blockOutOfTurnOnline(pi) {
+  if (mode !== 'online') return false;
+  if (canActThisTurn(pi)) return false;
+  toast('Wait for your turn!');
+  return true;
+}
+
 function humanPlay(idx) {
   if (!G.active) return;
   const pi = mode === 'online' ? myOnlineIndex : G.curIdx;
   const p = G.players[pi];
   if (!p || p.cpu) return;
-  // Block play if it's not this player's turn
-  if (mode === 'local' && pi !== G.curIdx) return;
+  // Never allow out-of-turn actions to mutate shared online state.
+  if (!canActThisTurn(pi)) {
+    blockOutOfTurnOnline(pi);
+    return;
+  }
   const card = p.hand[idx];
+  if (!card) return;
   if (!canPlayCard(card)) return;
   G.drawnThisTurn = false;
 
@@ -32,8 +47,10 @@ function humanDraw() {
   const pi = mode === 'online' ? myOnlineIndex : G.curIdx;
   const p = G.players[pi];
   if (!p || p.cpu) return;
-  // Block draw if it's not this player's turn
-  if (mode === 'local' && pi !== G.curIdx) return;
+  if (!canActThisTurn(pi)) {
+    blockOutOfTurnOnline(pi);
+    return;
+  }
   // Block draw while a stack is being resolved by animation
   if (_resolvingStack) return;
 
@@ -83,7 +100,10 @@ function humanSkip() {
   const pi = mode === 'online' ? myOnlineIndex : G.curIdx;
   const p = G.players[pi];
   if (!p || p.cpu) return;
-  if (mode === 'local' && pi !== G.curIdx) return;
+  if (!canActThisTurn(pi)) {
+    blockOutOfTurnOnline(pi);
+    return;
+  }
   if (!G.drawnThisTurn) {
     toast('Draw a card first!');
     return;
